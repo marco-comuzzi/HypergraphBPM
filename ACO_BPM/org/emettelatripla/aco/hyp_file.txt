@@ -1,0 +1,3 @@
+tail	head	weight
+D,E	F	3
+A	D,E	100
