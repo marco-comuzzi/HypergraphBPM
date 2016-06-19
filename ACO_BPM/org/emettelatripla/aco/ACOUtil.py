@@ -5,27 +5,30 @@ Created on Jun 16, 2016
 '''
 from directed_hypergraph import DirectedHypergraph
 from org.emettelatripla.util.util import *
+from collections import OrderedDict
+import random
+import operator
 
 
 def partialPheroUpdate(hg_phero:DirectedHypergraph, p:DirectedHypergraph):
     #update the phero level of all nodes in p
-    p_node_set = p.get_node_set()
+    p_edge_set = p.get_hyperedge_id_set()
+    p_utility = calculateUtility(p)
     #for now, utility is the cost
-    for p_node in p_node_set:
-        p_utility = p.get_node_attribute(p_node, 'cost')
-        hg_phero_utility = hg_phero.get_node_attribute(p_node, 'phero')
-        new_phero = p_utility + hg_phero_utility
-        hg_phero.add_node(p_node, phero = new_phero)
-        print("Phero value: "+str(new_phero))
+    for p_edge in p_edge_set:
+        curr_phero = hg_phero.get_hyperedge_attribute(p_edge, 'phero')
+        p.add_hyperedge(p.get_hyperedge_tail(p_edge), p.get_hyperedge_head(p_edge), phero = curr_phero + p_utility)
+        print("Phero value: "+str(p.get_hyperedge_attribute(p_edge, 'phero')))
        
 #tau is the evaporation coefficient
-def finalPheroUpdate(hgPhero:DirectedHypergraph, hg_partial:DirectedHypergraph, tau):
-    node_set = hg_partial.get_node_set()
-    for node in node_set:
-        #evaporate current phero on hgPhero and add partial update from hg_partial
-        evap_u = tau * hgPhero.get_node_attribute(node, 'phero')
-        new_phero = evap_u + hg_partial.get_node_attribute(node, 'phero')
-        hgPhero.add_node(node, phero = new_phero)
+def finalPheroUpdate(hg:DirectedHypergraph, hg_partial:DirectedHypergraph, tau):
+    edge_set = hg_partial.get_hyperedge_id_set()
+    for edge in edge_set:
+        #evaporate current phero on hg and add partial update from hg_partial
+        evap_u = tau * hg.get_hyperedge_attribute(edge, 'phero')
+        new_phero = evap_u + hg_partial.get_hyperedge_attribute(edge, 'phero')
+        hg.add_hyperedge(hg_partial.get_hyperedge_tail(edge), hg_partial.get_hyperedge_head(edge), phero = new_phero)
+    
         
 def calculateUtility(hg:DirectedHypergraph):
     utility = 0.0
@@ -35,14 +38,54 @@ def calculateUtility(hg:DirectedHypergraph):
         utility = utility + hg.get_node_attribute(node,'cost')
     return utility
         
-#this choice function simply picks the edge with highest weight
+#debugged!
 def pheroChoice(edge_set, hg:DirectedHypergraph):
-    max = 0
-    max_edge = ()
+    #create an ordered list of tuples (edge_id, phero_value)
+    dic = {}
     for edge in edge_set:
-        if hg.get_hyperedge_attribute(edge,'weight') > max:
-            max = hg.get_hyperedge_attribute(edge,'weight')
-            max_edge = edge
+        dic[edge] = hg.get_hyperedge_attribute(edge, 'phero')
+    sorted_dict = sorted(dic.items(), key=operator.itemgetter(1))
+    #build hash_pheroval like [edge_id]>[phero value]
+    hash_pheroval = [item[1] for item in sorted_dict]
+    hash_edgeid = [item[0] for item in sorted_dict]
+#     for edge in edge_set:
+#         hash_pheroval.append(hg.get_hyperedge_attribute(edge, 'phero'))
+#         hash_edgeid.append(edge)
+    # build cumulative hash_pheroval to compare randomly extracted variable
+    cumul_hash = list(hash_pheroval)
+    i=0
+    while i < len(hash_pheroval):
+        j = 0
+        while j < i:
+            cumul_hash[i] = cumul_hash[i] + hash_pheroval[j]
+            j = j+1
+        i = i+1
+    #print("This is the list: "+str(hash_pheroval))
+    #print("This is the cumul list: "+str(cumul_hash))
+    #extract random number and check
+    len_ch = len(cumul_hash)-1
+    low = cumul_hash[0]
+    high = cumul_hash[len_ch]
+    choice = random.uniform(low, high)
+    print("Random number is: "+str(choice))
+    #caculate the edge_id based on the drawn random number
+    notFound = True
+    i = 0
+    edge_in = 0
+    while (notFound):
+        #adjust if only 1 edge available (or if chosen is last edge in the list)
+        if i == (len(cumul_hash) - 1):
+            notFound = False
+            edge_in = i
+        #general case
+        elif choice <= cumul_hash[i+1]:
+            notFound = False
+            edge_in = i
+        i = i+1
+    #calculate chosen edge
+    #print("Chosen edge i: "+str(i))
+    chosen_edge = hash_edgeid[edge_in] 
     print("^^^ Edge selected based on pheromone choice: ")
-    printHyperedge(max_edge, hg)
-    return max_edge
+    printHyperedge(chosen_edge, hg)
+    print("^^^ end selected hyperedge print ^^^^")
+    return chosen_edge

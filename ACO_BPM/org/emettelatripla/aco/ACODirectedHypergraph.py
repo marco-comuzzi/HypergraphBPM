@@ -42,17 +42,22 @@ def acoAlgorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
             partialPheroUpdate(hg_phero, p)
             #check if p is better than current optimal solution
             #update if p is optimal
+            print("Utility of current path: "+str(utility)+" (opt utility: "+str(utility_opt)+")")
             if utility > utility_opt:
                 utility_opt = utility
                 p_opt = p
+                print("optimal path updated!")
             ant = ant + 1
             #pheromone update
             #TBC TBC
         col = col + 1
         #actual pheromone update
-        finalPheroUpdate(hg, hg_phero, tau)
+        finalPheroUpdate(hg, p_opt, tau)
     #do something else
+    print("********** OPTIMAL PATH FOUND ******************")
     printHg(p_opt, 'hyp_file.txt')
+    print("UTILITY: "+str(calculateUtility(p_opt)))
+    print("***********************************************")
 
 #node_set: current position (can be a set of nodes) in the search
 #p: current path
@@ -67,6 +72,7 @@ def acoSearch(p:DirectedHypergraph, hg:DirectedHypergraph, node_set):
     tail = hg.get_hyperedge_tail(next_edge)
     head = hg.get_hyperedge_head(next_edge)
     attrs = hg.get_hyperedge_attributes(next_edge)
+    printHyperedge(next_edge, hg)
     #add selected hyperedge/node to p
     p.add_hyperedge(tail, head, attrs)
     next_head = hg.get_hyperedge_head(next_edge)
