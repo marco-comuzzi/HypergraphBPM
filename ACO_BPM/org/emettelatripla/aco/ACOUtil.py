@@ -37,6 +37,29 @@ def calculateUtility(hg:DirectedHypergraph):
         printNode(node, hg)
         utility = utility + hg.get_node_attribute(node,'cost')
     return utility
+
+#this works for any anti-additive utility measure (just change the get_node_attribute)
+def calcUtilityCost(p:DirectedHypergraph):
+    node_set = p.get_node_set()
+    #calculate number of nodes in node_set
+    node_num = len(node_set)
+    #calculate sum of costs of all nodes
+    total_cost = 0
+    for node in node_set:
+        total_cost = total_cost + p.get_node_attribute(node, 'cost')
+    #calculate utility
+    utility = 1 - (total_cost / node_num)
+    return utility
+
+def calcUtilityTime(p:DirectedHypergraph):
+    return 0
+
+def calcUtilityQual(p:DirectedHypergraph):
+    return 0
+
+def calcUtilityAvail(p:DirectedHypergraph):
+    return 0
+
         
 #debugged!
 def pheroChoice(edge_set, hg:DirectedHypergraph):
