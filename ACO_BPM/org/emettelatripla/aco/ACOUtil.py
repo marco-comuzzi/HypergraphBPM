@@ -29,8 +29,15 @@ def finalPheroUpdate(hg:DirectedHypergraph, hg_partial:DirectedHypergraph, tau):
         new_phero = evap_u + hg_partial.get_hyperedge_attribute(edge, 'phero')
         hg.add_hyperedge(hg_partial.get_hyperedge_tail(edge), hg_partial.get_hyperedge_head(edge), phero = new_phero)
     
-        
-def calculateUtility(hg:DirectedHypergraph):
+    
+#must be parameterised with weoghts    
+def calculateUtility(hg:DirectedHypergraph, w_cost, w_time, w_qual, w_avail):
+    utility = 0.0
+    utility = (w_cost * calculateUtility(hg)) + (w_time * calcUtilityTime(hg)) + (w_qual * calcUtilityQual(hg)) + (w_avail * calcUtilityAvail(hg))
+    return utility
+
+#this simply calculates utility as sum of cost
+def calculateUtilityTEST(hg:DirectedHypergraph):
     utility = 0.0
     node_set = hg.get_node_set()
     for node in node_set:
