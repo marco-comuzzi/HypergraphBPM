@@ -70,10 +70,12 @@ def calcUtilityQual(p:DirectedHypergraph):
     #initialise utility value
     utility = p.get_node_attribute(node_list[0], 'qual')
     #calculate minimum of quality of nodes in path
-    for i in node_list:
+    i = 0
+    while i < node_num:
         curr_utility = p.get_node_attribute(node_list[i], 'qual')
         if curr_utility < utility:
             utility = curr_utility
+        i = i + 1
     #calculate utility
     return utility
 
@@ -82,7 +84,7 @@ def calcUtilityAvail(p:DirectedHypergraph):
     #calculate number of nodes in node_set
     node_num = len(node_set)
     #calculate product of avail for all nodes
-    total_cost = 0
+    total_cost = 1.0
     for node in node_set:
         total_cost = total_cost * p.get_node_attribute(node, 'avail')
     #calculate utility
