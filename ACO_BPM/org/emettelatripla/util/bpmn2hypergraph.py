@@ -56,13 +56,26 @@ def convertTask(task, hyperg, bpmndiagram):
         targets = bpmndiagram.findall("./bpmn:process/*[@id='"+out_flow.attrib['targetRef']+"']", ns)
         for target in targets:
             print("-- New Target found! : "+str(target.attrib['name']))
+            head_set = []
             #if target is task: add hyperdge and recursively call on target task
-            #if target is XOR: add hyperedge and recursively call on target task
-            #if target is AND: add hyperdge and call on all targets
+            if target.tag == "task" or target.tag == "endEvent" or "exclusiveGateway":
+                head_set.append(target.attrib["id"])
+            # if target is AND split
+            if target.tag == "parallelGateway" and target.attrib['gatewayDirection']=="Diverging":
+                #find and process recursively all outgoing arcs
+                and_outgoings = target.findall("./bpmn:outgoing")
+                for and_outgoing in and_outgoings:
+                    exploreAndJoin(and_outgoing.text, head_set, bpmndiagram)
+            
 
 
 
 #flow = "node_05c888e8-2ebe-4d1b-a838-29d032d8ebda"
 #print(str(isFlowInGateway(flow, bpmndiagram)))
+
+def exploreAndJoin(arc, head_set, bpmndiagram):
+    ns = {'bpmn':'http://www.omg.org/spec/BPMN/20100524/MODEL' }
+    targets = bpmndiagram.findall("./bpmn:process/*[@id='"+arc.attrib['targetRef']+"']", ns)
+    
 
 convertBpmnToProcessHgraph(file_name)
