@@ -19,6 +19,20 @@ def printHg(hg:DirectedHypergraph, file_name):
         printHyperedge(edge, hg)
     print("========== Printing hypergraph complete ======================")
     
+def printHgStdOutOnly(hg:DirectedHypergraph):
+    #hg.write(file_name, ',','\t')
+    print("========= Printing hypergraph... =============================")
+    #f = open(file_name, 'r')
+    #contents = f.readlines()
+    #for i in contents:
+     #   print(i)
+    #f.close()
+    for node in hg.get_node_set():
+        printNode(node, hg)
+    for edge in hg.get_hyperedge_id_set():
+        printHyperedge(edge, hg)
+    print("========== Printing hypergraph complete ======================")
+    
 def printNode(node, hg:DirectedHypergraph):
     print("Found new node: "+str(node)+" ++ "+str(hg.get_node_attributes(node)))
     
