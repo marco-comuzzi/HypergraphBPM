@@ -3,13 +3,13 @@ Created on Jun 16, 2016
 
 @author: UNIST
 '''
-from directed_hypergraph import DirectedHypergraph
+from halp.directed_hypergraph import DirectedHypergraph
 from org.emettelatripla.util.util import *
 from org.emettelatripla.aco import ACOUtil
-from org.emettelatripla.aco.ACOUtil import calcUtilityAvail
-from org.emettelatripla.aco.ACOUtil import calcUtilityCost
-from org.emettelatripla.aco.ACOUtil import calcUtilityTime
-from org.emettelatripla.aco.ACOUtil import calcUtilityQual
+from org.emettelatripla.aco.ACOUtil import calc_utility_avail
+from org.emettelatripla.aco.ACOUtil import calc_utility_cost
+from org.emettelatripla.aco.ACOUtil import calc_utility_time
+from org.emettelatripla.aco.ACOUtil import calc_utility_qual
 
 
 # Initialize an empty hypergraph
@@ -47,10 +47,10 @@ H.add_hyperedges(hyperedges)
 # for id in edges:
 #     printHyperedge(id, H)
     
-calcUtilityAvail(H)
+calc_utility_avail(H)
 #Test utility function
-print("Utility COST: "+str(calcUtilityCost(H)))
-print("Utility AVAIL: "+str(calcUtilityAvail(H)))
-print("Utility QUAL: "+str(calcUtilityQual(H)))
-print("Utility TIME: "+str(calcUtilityTime(H)))
+print("Utility COST: "+str(calc_utility_cost(H)))
+print("Utility AVAIL: "+str(calc_utility_avail(H)))
+print("Utility QUAL: "+str(calc_utility_qual(H)))
+print("Utility TIME: "+str(calc_utility_time(H)))
 #print("Utility: "+str())

@@ -8,18 +8,25 @@ Works with PNML Petri nets extracted from ProM
 '''
 import logging
 import xml.etree.ElementTree as ET
-from directed_hypergraph import DirectedHypergraph
+from halp.directed_hypergraph import DirectedHypergraph
+from halp.utilities.directed_graph_transformations import to_networkx_digraph
+import matplotlib.pyplot as plt
+import networkx as nx
 from org.emettelatripla.aco.ACOUtil import *
 from org.emettelatripla.util.util import *
+from networkx.classes.digraph import DiGraph
+from networkx.classes.digraph import Graph
 
 #setup the logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-file_name = "C://BPMNexamples/petrinet.pnml"
+file_name = "C://BPMNexamples/review.pnml"
 
 tree = ET.parse(file_name)
 pnet = tree.getroot()
+
+print(pnet.tag)
 
 # places = pnet.findall("./net/page/place")
 # 
@@ -100,7 +107,15 @@ def convert_pnet_to_hypergraph(pnet):
         name = get_transition_name(transition)
         hg.add_hyperedge(tail, head, name = name, phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
     #print the result before exit
-    printHgStdOutOnly(hg)
+    print_hg_std_out_only(hg)
     return hg
 
 hg = convert_pnet_to_hypergraph(pnet)
+
+#convert hypergaph to directed graph
+dg = DiGraph()
+dg = to_networkx_digraph(hg)
+#draw diected graph
+nx.draw(dg)
+plt.show()
+

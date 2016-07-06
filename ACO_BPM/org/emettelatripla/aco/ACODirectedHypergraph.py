@@ -4,7 +4,7 @@ Created on Jun 16, 2016
 @author: UNIST
 '''
 
-from directed_hypergraph import DirectedHypergraph 
+from halp.directed_hypergraph import DirectedHypergraph 
 from org.emettelatripla.aco.ACOUtil import *
 from org.emettelatripla.util.util import *
 
@@ -14,7 +14,7 @@ from org.emettelatripla.util.util import *
 #ANT_NUM number of ants in one colony
 #COL_NUM number of colonies
 #tau: pheromone evaporation coefficient 
-def acoAlgorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
+def aco_algorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
     #currently optimal path
     p_opt = DirectedHypergraph()
     utility_opt = 0.0
@@ -33,13 +33,13 @@ def acoAlgorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
             p.add_node(node, hg.get_node_attributes(node))
         while ant < ANT_NUM:
             print("--- Processing ant n. "+str(ant))
-            #call acoSearch on p
-            p = acoSearch(p, hg, node_set)
-            printHg(p,'hyp_file.txt')
+            #call aco_search on p
+            p = aco_search(p, hg, node_set)
+            print_hg(p,'hyp_file.txt')
             #calculate utility of p
-            utility = calculateUtility(p)
+            utility = calculate_utility(p)
             #calculate partial pheromone update
-            partialPheroUpdate(hg_phero, p)
+            partial_phero_update(hg_phero, p)
             #check if p is better than current optimal solution
             #update if p is optimal
             print("Utility of current path: "+str(utility)+" (opt utility: "+str(utility_opt)+")")
@@ -52,27 +52,27 @@ def acoAlgorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
             #TBC TBC
         col = col + 1
         #actual pheromone update
-        finalPheroUpdate(hg, p_opt, tau)
+        final_phero_update(hg, p_opt, tau)
     #do something else
     print("********** OPTIMAL PATH FOUND ******************")
-    printHg(p_opt, 'hyp_file.txt')
-    print("UTILITY: "+str(calculateUtility(p_opt)))
+    print_hg(p_opt, 'hyp_file.txt')
+    print("UTILITY: "+str(calculate_utility(p_opt)))
     print("***********************************************")
 
 #node_set: current position (can be a set of nodes) in the search
 #p: current path
 #hg: process model
-def acoSearch(p:DirectedHypergraph, hg:DirectedHypergraph, node_set):
+def aco_search(p:DirectedHypergraph, hg:DirectedHypergraph, node_set):
     #select next hyperedge from node according to pheromone distribution
     edge_set = set()
     for node in node_set:
         edge_set = set.union(edge_set,hg.get_forward_star(node))
     #select edge based on value of pheromone attribute (and add h_edge to current solution
-    next_edge = pheroChoice(edge_set, hg)
+    next_edge = phero_choice(edge_set, hg)
     tail = hg.get_hyperedge_tail(next_edge)
     head = hg.get_hyperedge_head(next_edge)
     attrs = hg.get_hyperedge_attributes(next_edge)
-    printHyperedge(next_edge, hg)
+    print_hyperedge(next_edge, hg)
     #add selected hyperedge/node to p
     p.add_hyperedge(tail, head, attrs)
     next_head = hg.get_hyperedge_head(next_edge)
@@ -88,6 +88,6 @@ def acoSearch(p:DirectedHypergraph, hg:DirectedHypergraph, node_set):
         if hg.get_node_attribute(node,'sink') == True:
             isSink = True
     if isSink == False:
-        acoSearch(p, hg, next_head)
+        aco_search(p, hg, next_head)
     #else recursive call
     return p

@@ -3,7 +3,7 @@ Created on Jun 16, 2016
 
 @author: UNIST
 '''
-from directed_hypergraph import DirectedHypergraph
+from halp.directed_hypergraph import DirectedHypergraph
 from org.emettelatripla.util.util import *
 from org.emettelatripla.aco.ACODirectedHypergraph import *
 from org.emettelatripla.aco.ACOUtil import *
@@ -39,5 +39,5 @@ H.add_hyperedges(hyperedges)
 # print("Choosing hyperedge.....")
 # printHyperedge(pheroChoice(edges, H), H)
 
-acoAlgorithm(['A'], H, 2, 2, 0.77)
+aco_algorithm(['A'], H, 2, 2, 0.77)
 
