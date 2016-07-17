@@ -5,8 +5,8 @@ Created on Jun 16, 2016
 '''
 from halp.directed_hypergraph import DirectedHypergraph
 from org.emettelatripla.util.util import *
-from org.emettelatripla.aco.ACODirectedHypergraph import *
-from org.emettelatripla.aco.ACOUtil import *
+from org.emettelatripla.aco.ACO_directed_hypergraph import *
+from org.emettelatripla.aco.ACO_util import *
 
 # Initialize an empty hypergraph
 H = DirectedHypergraph()

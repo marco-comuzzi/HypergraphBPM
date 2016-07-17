@@ -8,7 +8,7 @@ Created on 2016. 6. 29.
 #import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from halp.directed_hypergraph import DirectedHypergraph
-from org.emettelatripla.aco.ACOUtil import *
+from org.emettelatripla.aco.ACO_util import *
 from org.emettelatripla.util.util import *
 import logging
 

@@ -1,0 +1,23 @@
+tail	head	weight
+n13	reject	1
+decide	n12	1
+n12	tau from tree	1
+n9	get review 2	1
+get review 1	tau join	1
+n12	accept	1
+invite reviewers	tau split	1
+tau split	get review 1,get review 3	1
+n10	tau join	1
+get review 2	n10	1
+tau join	collect reviews	1
+accept	n2	1
+get review X	n13	1
+collect reviews	decide	1
+tau from tree	n13	1
+get review 3	tau join	1
+n9	time-out 2	1
+invite additional reviewer	get review X	1
+n12	invite additional reviewer	1
+time-out 2	n10	1
+tau split	n9	1
+reject	n2	1

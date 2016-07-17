@@ -10,7 +10,7 @@ import random
 import operator
 
 
-def partial_phero_update(hg_phero:DirectedHypergraph, p:DirectedHypergraph):
+def partial_phero_update(hg_phero, p):
     #update the phero level of all nodes in p
     p_edge_set = p.get_hyperedge_id_set()
     p_utility = calculate_utility(p)
@@ -21,7 +21,7 @@ def partial_phero_update(hg_phero:DirectedHypergraph, p:DirectedHypergraph):
         print("Phero value: "+str(p.get_hyperedge_attribute(p_edge, 'phero')))
        
 #tau is the evaporation coefficient
-def final_phero_update(hg:DirectedHypergraph, hg_partial:DirectedHypergraph, tau):
+def final_phero_update(hg, hg_partial, tau):
     edge_set = hg_partial.get_hyperedge_id_set()
     for edge in edge_set:
         #evaporate current phero on hg and add partial update from hg_partial
@@ -31,13 +31,13 @@ def final_phero_update(hg:DirectedHypergraph, hg_partial:DirectedHypergraph, tau
     
     
 #must be parameterised with weoghts    
-def calculate_utility(hg:DirectedHypergraph, w_cost, w_time, w_qual, w_avail):
+def calculate_utility(hg, w_cost, w_time, w_qual, w_avail):
     utility = 0.0
     utility = (w_cost * calculate_utility(hg)) + (w_time * calc_utility_time(hg)) + (w_qual * calc_utility_qual(hg)) + (w_avail * calc_utility_avail(hg))
     return utility
 
 #this simply calculates utility as sum of cost
-def calculate_utility_test(hg:DirectedHypergraph):
+def calculate_utility_test(hg):
     utility = 0.0
     node_set = hg.get_node_set()
     for node in node_set:
@@ -46,7 +46,7 @@ def calculate_utility_test(hg:DirectedHypergraph):
     return utility
 
 #this works for any anti-additive utility measure (just change the get_node_attribute)
-def calc_utility_cost(p:DirectedHypergraph):
+def calc_utility_cost(p):
     node_set = p.get_node_set()
     #calculate number of nodes in node_set
     node_num = len(node_set)
@@ -58,10 +58,10 @@ def calc_utility_cost(p:DirectedHypergraph):
     utility = 1 - (total_cost / node_num)
     return utility
 
-def calc_utility_time(p:DirectedHypergraph):
+def calc_utility_time(p):
     return 0
 
-def calc_utility_qual(p:DirectedHypergraph):
+def calc_utility_qual(p):
     node_set = p.get_node_set()
     #create list to have ordered elements
     node_list = list(node_set)
@@ -79,7 +79,7 @@ def calc_utility_qual(p:DirectedHypergraph):
     #calculate utility
     return utility
 
-def calc_utility_avail(p:DirectedHypergraph):
+def calc_utility_avail(p):
     node_set = p.get_node_set()
     #calculate number of nodes in node_set
     node_num = len(node_set)
@@ -93,7 +93,7 @@ def calc_utility_avail(p:DirectedHypergraph):
 
         
 #debugged!
-def phero_choice(edge_set, hg:DirectedHypergraph):
+def phero_choice(edge_set, hg):
     #create an ordered list of tuples (edge_id, phero_value)
     dic = {}
     for edge in edge_set:

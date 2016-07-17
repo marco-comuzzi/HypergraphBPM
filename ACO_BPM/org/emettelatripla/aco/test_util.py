@@ -5,11 +5,11 @@ Created on Jun 16, 2016
 '''
 from halp.directed_hypergraph import DirectedHypergraph
 from org.emettelatripla.util.util import *
-from org.emettelatripla.aco import ACOUtil
-from org.emettelatripla.aco.ACOUtil import calc_utility_avail
-from org.emettelatripla.aco.ACOUtil import calc_utility_cost
-from org.emettelatripla.aco.ACOUtil import calc_utility_time
-from org.emettelatripla.aco.ACOUtil import calc_utility_qual
+from org.emettelatripla.aco import ACO_util
+from org.emettelatripla.aco.ACO_util import calc_utility_avail
+from org.emettelatripla.aco.ACO_util import calc_utility_cost
+from org.emettelatripla.aco.ACO_util import calc_utility_time
+from org.emettelatripla.aco.ACO_util import calc_utility_qual
 
 
 # Initialize an empty hypergraph

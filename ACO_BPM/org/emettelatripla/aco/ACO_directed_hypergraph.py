@@ -5,7 +5,7 @@ Created on Jun 16, 2016
 '''
 
 from halp.directed_hypergraph import DirectedHypergraph 
-from org.emettelatripla.aco.ACOUtil import *
+from org.emettelatripla.aco.ACO_util import *
 from org.emettelatripla.util.util import *
 
 
@@ -14,7 +14,7 @@ from org.emettelatripla.util.util import *
 #ANT_NUM number of ants in one colony
 #COL_NUM number of colonies
 #tau: pheromone evaporation coefficient 
-def aco_algorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
+def aco_algorithm(node_set, hg, ANT_NUM, COL_NUM, tau):
     #currently optimal path
     p_opt = DirectedHypergraph()
     utility_opt = 0.0
@@ -62,7 +62,7 @@ def aco_algorithm(node_set, hg:DirectedHypergraph, ANT_NUM, COL_NUM, tau):
 #node_set: current position (can be a set of nodes) in the search
 #p: current path
 #hg: process model
-def aco_search(p:DirectedHypergraph, hg:DirectedHypergraph, node_set):
+def aco_search(p, hg, node_set):
     #select next hyperedge from node according to pheromone distribution
     edge_set = set()
     for node in node_set:
