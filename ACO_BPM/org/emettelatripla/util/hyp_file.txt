@@ -1,23 +1,659 @@
 tail	head	weight
-n13	reject	1
-decide	n12	1
-n12	tau from tree	1
-n9	get review 2	1
-get review 1	tau join	1
-n12	accept	1
-invite reviewers	tau split	1
-tau split	get review 1,get review 3	1
-n10	tau join	1
-get review 2	n10	1
-tau join	collect reviews	1
-accept	n2	1
-get review X	n13	1
-collect reviews	decide	1
-tau from tree	n13	1
-get review 3	tau join	1
-n9	time-out 2	1
-invite additional reviewer	get review X	1
-n12	invite additional reviewer	1
-time-out 2	n10	1
-tau split	n9	1
-reject	n2	1
+n62	1e consult      bezoek	1
+n26	uterus      - carc. cervix vlgs. werthei	1
+ct thorax	n61	1
+fdp - dimeer - immunologisch	n61	1
+vitamine b3	n61	1
+tau start	n32	1
+n62	factor v leiden -r506q- mbv dna-test	1
+n62	vrw.gesl.org- plastische operatie van vu	1
+duplexscan - venen been	n61	1
+n60	tau start	1
+dieet nno	n61	1
+proteine-s-antigeen -totaal	n61	1
+n30	echografie-doppler venen been	1
+vrw.gesl.org- adnex-extirpatie dmv lapar	n31	1
+n62	190035 dagverpleging    a007	1
+melkzuur dehydrogenase - spoed	n61	1
+n52	patient niet verschenen radiologie	1
+punctie cyste tumor ed. door radioloog o	n61	1
+n62	190101 bovenreg.toesl.  a101	1
+calcium	n61	1
+n62	albumine - spoed	1
+n62	creatinine	1
+skelet - scintigrafie totale lichaam	n52	1
+n62	gefiltreerd erytrocytenconcentraat	1
+n32	vrw.gesl.org- adnex-extirpatie dmv lapar	1
+antitrombine iii mbv chromogeen-n-substr	n61	1
+sex-hormone-binding globuline mbv ria	n61	1
+echografie a vue ivw zwangerschap - met	n28	1
+ethanol -enzymatisch of gaschromatografi	n61	1
+n62	melkzuurdehydrogenase -ldh- kinetisch	1
+n62	ct bovenbuik	1
+n62	ct a.pulmonalis	1
+n62	cde fenotypering	1
+ligdagen - alle spec.beh.kinderg.-reval.	n61	1
+n62	vitamine b12 mbv chemieluminescentie	1
+blaas       - uretrocystoscopie nno	n59	1
+n62	interc.consult klinisch  interne ziekten	1
+n36	vagina      - scopie excl.weefselwegname	1
+n62	anticoagulans lupus mbv elisa	1
+vrw.gesl.org- curettage gefractioneerd	n33	1
+osmolaliteit - spoed	n61	1
+triglyceriden - enzymatisch	n61	1
+n62	onderbeen	1
+n62	aanname laboratoriumonderzoek	1
+n60	rib-sternum	1
+echo hals --waaronder schildklier--	n56	1
+n62	190021 klinische opname a002	1
+n62	proteine-s-antigeen -totaal	1
+behandelen  - in hyperpressietank	n13	1
+n16	echo mamma	1
+creatinine - spoed	n61	1
+natrium - vlamfotometrisch - spoed	n61	1
+n62	onderz. naar aanwezigheid van koude anti	1
+tau from tree	n29	1
+n62	lh mbv radioisotopen	1
+klinische kaart - verloskunde en gynaeco	n7	1
+tau from tree	n27	1
+wervelkolom - thoracaal	wervelkolom - thoracolumbale overgang	1
+n26	uterus      - extirpatie - abdominaal me	1
+n62	hematocriet mbv centrifuge	1
+clostridium elisa-test	n61	1
+hematocriet mbv centrifuge	n61	1
+n57	tau from tree	1
+n43	pyelografie --wo niertransplantaat--	1
+vitamine b12 mbv chemieluminescentie	n61	1
+sgot asat kinetisch - spoed	n61	1
+ferritine kwn mbv chemieluminescentie	n61	1
+testosteron mbv radioisotopen	n61	1
+n62	diagnostische punctie onder echocontrole	1
+n62	coupe ter inzage	1
+interc.consult klinisch  anesthesie	n61	1
+n62	tsh enzym-immunologisch	1
+n62	cytologisch onderzoek - lymfeklierpuncti	1
+n29	tau from tree	1
+n62	hepatitis-b surface antigeen confirmatie	1
+n62	resistentiebepalingen - 5 bepalingen	1
+n34	vrw.gesl.org- curettage gefractioneerd	1
+190205 klasse 3b        a205	n61	1
+n62	ct totale lichaam	1
+ureum - spoed	n30	1
+patient niet verschenen radiologie	n54	1
+n62	sgpt - alat kinetisch	1
+tau from tree	n59	1
+buik        - laparoscopie - diagnostisc	n35	1
+n25	tau from tree	1
+n62	anti-cytomegalovirus ig of igg -elisa	1
+n40	tau from tree	1
+n62	hematocriet - spoed	1
+n62	e.c.g.      - elektrocardiografie	1
+trombotest	n61	1
+tsh enzym-immunologisch	n61	1
+creatine fosfokinase isoenzym ckmb	n61	1
+n35	tau from tree	1
+n60	buikoverzicht	1
+ct a.pulmonalis	n61	1
+kalium potentiometrisch	n61	1
+n62	clostridium elisa-test	1
+tau from tree	n28	1
+n7	tau from tree	1
+n13	tau from tree	1
+n62	cefalinetijd - coagulatie	1
+delta-4-androsteendion	n61	1
+n8	wervelkolom - cervicaal	1
+vriescoupe	n59	1
+ordertarief	n61	1
+n62	longfunctie - co2 - capnografie	1
+n62	creatine fosfokinase isoenzym ckmb	1
+heup	n59	1
+n62	tumor - petscan totale lichaam	1
+n62	ca-19.9 tumormarker	1
+anti-cytomegalovirus ig of igg -elisa	n61	1
+onderzoek van elders niet beoordeeld	n4	1
+n45	tau from tree	1
+n50	uterus      - hysteroscopie	1
+n62	ct lever en galwegen	1
+n41	alfa amylase - spoed	1
+n59	tau from tree	1
+n62	vitamine b6	1
+ct lever en galwegen	n61	1
+n62	oestradiol mbv radioisotopen -ria	1
+n62	creatinine - spoed	1
+buik        - adhesiolyse en biopsie dmv	n33	1
+tau start	n5	1
+n62	fdp - dimeer - immunologisch	1
+wisselen drain onder rontgencontrole	n15	1
+mri abdomen	n61	1
+tau from tree	n21	1
+n51	tau from tree	1
+uterus      - extirpatie - abdominaal me	n29	1
+n62	immunopathologisch onderzoek	1
+bekken	n51	1
+n38	echografie a vue ivw zwangerschap - met	1
+n62	trombocyten tellen - spoed	1
+buikoverzicht	n59	1
+tau start	n58	1
+n62	zink	1
+n62	vitamine e -hplc-methode	1
+n62	dieet nno	1
+leukocyten tellen elektronisch	n61	1
+n62	vulva       - rad.vulvectomie - opp.en d	1
+n46	bekken - staand	1
+n62	haemoglobine foto-electrisch - spoed	1
+wervelkolom - lumbaal	n29	1
+totaal eiwit	n61	1
+n62	vitamine b2	1
+n62	magnesium  -aas - spoed	1
+n26	wervelkolom - lumbaal	1
+wervelkolom - thoracolumbale overgang	n9	1
+n62	alkalische fosfatase - kinetisch - spoed	1
+vrij t4 mbv ria -ft 4	n61	1
+patient niet verschenen ngiv- no show -	n21	1
+bovenarm	n41	1
+n62	t3-uptake latente bindingscap. geb. tbg	1
+tau from tree	n46	1
+n60	bekken - liggend	1
+verlosk.-gynaec. korte kaart kosten-out	n61	1
+opname volgens barsonie	n48	1
+n62	mri bekken	1
+analgesie   - epiduraal door anesthesist	n30	1
+n62	punctie cyste tumor ed. door radioloog o	1
+n62	melkzuur dehydrogenase - spoed	1
+n18	tau from tree	1
+thorax - op zaal	n57	1
+n62	protrombinetijd -quick owren of modif.-	1
+kalium vlamfotometrisch - spoed	n61	1
+maag - ontledig.-scint vast-vloeib.voeds	darm - colonpassage scint.comp.vervolg	1
+n27	klinische kaart - verloskunde en gynaeco	1
+n35	tuba uterina- reanastomose na sterilisat	1
+bicarbonaat	n61	1
+n62	verlosk.-gynaec.  aanv.kaart kosten-out	1
+lh mbv radioisotopen	n61	1
+international normalised ratio mbv tromb	n61	1
+tau from tree	n52	1
+n15	tau from tree	1
+n62	hepatitis-c-virus roche -hcvr- mbv pcr	1
+n62	antitrombine iii mbv chromogeen-n-substr	1
+n30	tau from tree	1
+cefalinetijd - coagulatie	n61	1
+tau from tree	n38	1
+bezinkingssnelheid foto-elektrisch	n61	1
+tau from tree	n31	1
+bloedstollingsfactor xii - activiteit	n61	1
+n25	pyelografie antegraad via drain	1
+gefiltreerd erytrocytenconcentraat	n61	1
+n60	tau from tree	1
+gamma glutamyltranspeptidase - spoed	n61	1
+interc.consult klinisch  reumatologie	n61	1
+rib-sternum	n59	1
+darm - colonpassage scint.comp.vervolg	n15	1
+n62	ordertarief	1
+tau from tree	n39	1
+vagina      - scopie excl.weefselwegname	n33	1
+behandeltijd - eenheid t1 - megavolt	n51	1
+longfunctie - stroomvolume curve	n15	1
+n55	tau from tree	1
+creatine fosfokinase mb - spoed	n61	1
+n62	kruisproef volledig -drie methoden-	1
+diagnostische punctie onder echocontrole	n61	1
+ct abdomen	n61	1
+n42	vagina      - scopie incl.evt.vulvabiops	1
+n64	behandeltijd - eenheid t4 - megavolt	1
+n9	longfunctie - spirometrie	1
+calcium - spoed	n61	1
+cytologisch onderzoek - ascites -	n61	1
+n60	blaas       - uretrocystoscopie nno	1
+n62	arterie     - punctie tbv.verblijfsnaald	1
+albumine - spoed	n61	1
+n53	tau start	1
+n62	histologisch onderzoek - biopten nno	1
+crp c-reactief proteine	n61	1
+hepatitis-c-virus roche -hcvr- mbv pcr	n61	1
+n60	heup	1
+n62	differentiatie leukocyten - handmatig	1
+klinische kaart - inwendige geneeskunde	n61	1
+magnesium  -aas - spoed	n61	1
+n47	tau from tree	1
+echografie  - genitalia interna	n59	1
+lymf.syst.  - stageringslymfadenectomie	peritoneum  - omentectomie	1
+n3	cytologisch onderzoek tbv bevolkingsonde	1
+n62	cito histologisch onderzoek	1
+n62	kalium potentiometrisch	1
+tau from tree	n58	1
+alfa-1-foetoproteine	n61	1
+alfa amylase - spoed	n45	1
+n62	histologisch onderzoek - grote resectiep	1
+hematocriet - spoed	n61	1
+n17	tau from tree	1
+tau from tree	n55	1
+n62	cytologisch onderzoek - urine niercyste	1
+n27	cytologisch onderzoek - endocervix -	1
+n62	echogeleide als ass.bij punctie-biopsie	1
+n40	behandeltijd - eenheid t2 - megavolt	1
+reticulocyten tellen mbv facscan	n61	1
+n62	administratief tarief       - eerste pol	1
+n62	ct bekken	1
+ct totale lichaam	n61	1
+klinische kaart - anesthesie	n61	1
+n62	von willebrand profiel mbv protease	1
+n62	hemoglobine foto-elektrisch	1
+n62	progesteron mbv radioisotopen	1
+n62	vitamine d3	1
+factor ii mutatie mbv pcr	n61	1
+n19	echogeleide als ass. bij punctie-biopsie	1
+totaal t3 - trijoodthyronine mbv radiois	n61	1
+cytologisch onderzoek - ectocervix -	n61	1
+n33	tau from tree	1
+n62	crp c-reactief proteine	1
+n1	tau from tree	1
+n62	factor ii mutatie mbv pcr	1
+n62	haptoglobine	1
+tau from tree	n56	1
+n62	screening antistoffen erytrocyten	1
+n62	simulator - gebruik voor aanvang megavol	1
+cytologisch onderzoek - urine niercyste	n61	1
+n62	fibrinogeen	1
+n62	190204 klasse 3a        a204	1
+n46	verlosk.-gynaec.   jaarkaart kosten-out	1
+echo bovenbuik	n61	1
+n52	vagina      - toucher onder anesthesie	1
+tau from tree	n30	1
+n15	unknown	1
+n62	co-hb kwn.	1
+n62	totaal t4 - thyroxine immunofluorimetris	1
+vagina      - toucher onder anesthesie	n53	1
+n62	vitamine a	1
+colon inloop	n61	1
+tau from tree	n48	1
+n62	cytologisch onderzoek - diversen -	1
+n62	cytologisch onderzoek - ascites -	1
+mri bekken	n61	1
+n58	thorax - op zaal	1
+n62	190205 klasse 3b        a205	1
+t3-uptake latente bindingscap. geb. tbg	n61	1
+magnesium  -aas	n61	1
+microscopisch onderzoek - gekleurd en on	n61	1
+proteine-s-antigeen -vrij	n61	1
+cytologisch onderzoek - diversen -	n61	1
+vitamine e -hplc-methode	n61	1
+vitamine b6	n61	1
+n63	tau from tree	1
+n17	tau start	1
+n52	tau from tree	1
+ca-19.9 tumormarker	n61	1
+uterus      - hysteroscopie	n47	1
+inwend.geneesk.    jaarkaart kosten-out	n8	1
+n50	tau from tree	1
+prolactine mbv eia	n61	1
+echo nieren-urinewegen	n43	1
+n62	creatine fosfokinase mb - spoed	1
+n62	bloedstollingsfactor xi - activiteit	1
+n27	tau from tree	1
+zink	n61	1
+n62	dhea-sulfaat met extractie mbv ria	1
+n6	tau from tree	1
+buik        - punctie ascites ontlastend	n15	1
+urine onderzoek - kwalitatief	n61	1
+190034 afwezigheidsdag  a006	n37	1
+arterie     - punctie tbv.verblijfsnaald	n61	1
+tau from tree	n19	1
+directe antiglobulinetest - coombs	n61	1
+n62	bloedstollingsfactor xii - activiteit	1
+190021 klinische opname a002	n61	1
+n60	echografie  - genitalia interna	1
+n34	buik        - adhesiolyse en biopsie dmv	1
+n48	tau from tree	1
+sgpt - alat kinetisch	n61	1
+teletherapie - megavolt fotonen bestrali	n59	1
+echografie  - blaas - extern	n45	1
+echogeleide als ass.bij punctie-biopsie	n61	1
+n40	vulva       - biopsie-punctie-cytologie	1
+1e consult poliklinisch	n61	1
+n62	trombocyten tellen - elektronisch	1
+n53	echo abdomen	1
+n9	mammografie thoraxwand	1
+histologisch onderzoek - grote resectiep	n61	1
+tau from tree	n51	1
+pyelografie antegraad via drain	n26	1
+n62	leucocyten tellen -electronisch- spoed	1
+n4	tau from tree	1
+tau start	n19	1
+longfunctie - spirometrie	longfunctie - stroomvolume curve	1
+n62	cholesterol totaal	1
+tau start	n34	1
+tau from tree	n47	1
+anti-chlamydia iga mbv elisa	n61	1
+n30	190034 afwezigheidsdag  a006	1
+tau from tree	n53	1
+n62	telefonisch consult	1
+n34	buik        - laparoscopie - diagnostisc	1
+kreatinine fosfokinase - spoed	n61	1
+longfunctie - co2 - capnografie	n61	1
+n62	thorax	1
+knie - m-z onderbeen	n61	1
+n62	digoxine	1
+eiwit beperkt - mineralen beperkt	n61	1
+trombocyten tellen - elektronisch	n61	1
+n62	cea - tumormarker mbv meia	1
+n26	tau from tree	1
+osmolaliteit	n61	1
+kruisproef volledig -drie methoden-	n61	1
+n62	eiwit beperkt - mineralen beperkt	1
+n3	tau from tree	1
+n62	echo been	1
+troponine-t mbv elisa	n61	1
+n62	actuele ph - pco2 - stand.bicarbonaat	1
+n62	alkalische fosfatase -kinetisch-	1
+n32	tau start	1
+n62	o2-saturatie	1
+coupe ter inzage	n61	1
+alkalische fosfatase - kinetisch - spoed	n61	1
+n62	bicarbonaat	1
+n16	tau from tree	1
+n54	tau from tree	1
+n62	testosteron mbv radioisotopen	1
+n62	cytologisch onderzoek - vagina -	1
+n40	cytologisch onderzoek - buiktumorpunctie	1
+haptoglobine	n61	1
+n62	erytrocyten tellen - elektronisch	1
+n60	brachytherapie - interstitieel - intensi	1
+n54	ct arterien hersenen	1
+vitamine a	n61	1
+n60	buikoverzicht - op zaal	1
+bekken - liggend	n59	1
+n62	vrij t4 mbv ria -ft 4	1
+n31	tau from tree	1
+n36	tau from tree	1
+erytrocyten tellen - elektronisch	n61	1
+echo mamma	n17	1
+brain natriuretic peptide -bnp- mbv immu	n61	1
+n45	ligase chain reaction -lcr-	1
+n9	bilirubine kwantitatief totaal of direct	1
+n28	tau from tree	1
+n62	calcium	1
+n21	maag - ontledig.-scint vast-vloeib.voeds	1
+administratief tarief       - eerste pol	n61	1
+vulva       - radicale vulvect. znd ingu	vulva       - therapeutische punctie aan	1
+n9	wisselen drain onder rontgencontrole	1
+n41	tau from tree	1
+n62	hemoglobine a1	1
+natrium vlamfotometrisch	n61	1
+n62	sex-hormone-binding globuline mbv ria	1
+verlosk.-gynaec.   jaarkaart kosten-out	n48	1
+uterus      - carc. cervix vlgs. werthei	n29	1
+fsh enzym-immunologisch	n61	1
+n62	calcium - spoed	1
+n62	albumine	1
+n62	stollingsfactor - viii - activiteit	1
+n62	anti-hiv mbv elisa	1
+paclitaxel	n61	1
+n62	klinische kaart - anesthesie	1
+brachytherapie - interstitieel - intensi	n59	1
+echografie-doppler venen been	n37	1
+n62	interc.consult klinisch  radiotherapie	1
+n62	melkzuur enzymatisch	1
+n62	punctie tbv cytologisch onderzoek door p	1
+n62	triglyceriden - enzymatisch	1
+n62	sgpt alat kinetisch - spoed	1
+n62	1e consult poliklinisch	1
+n62	mri abdomen	1
+vulva       - therapeutische punctie aan	n9	1
+n60	teletherapie - megavolt fotonen bestrali	1
+cea - tumormarker mbv meia	n61	1
+resistentiebepalingen - 5 bepalingen	n61	1
+melkzuurdehydrogenase -ldh- kinetisch	n61	1
+differentiatie leukocyten - handmatig	n61	1
+bloedgroep abo en rhesusfactor	n61	1
+n55	inwend.geneesk.  korte kaart kosten-out	1
+n8	tau start	1
+n62	crp c-reactief proteine - spoed	1
+sgot - asat kinetisch	n61	1
+n62	ct hals	1
+stollingsfactor - viii - activiteit	n61	1
+n62	transferrine mbv ics	1
+n50	behandeltijd - eenheid t3 - megavolt	1
+n62	bloedgroepbep. anders dan abo per bloedg	1
+ca-125 mbv meia	n61	1
+totaal t4 - thyroxine immunofluorimetris	n61	1
+tau from tree	n8	1
+n62	troponine-t mbv elisa	1
+n38	tau from tree	1
+tau from tree	n15	1
+sgpt alat kinetisch - spoed	n61	1
+betasubunit bep. mbv. ria hcg	n61	1
+behandeltijd - eenheid t4 - megavolt	n47	1
+n62	rhesusfactor d - centrifugeermethode - e	1
+n62	melkzuur enzymatisch - spoed	1
+vrw.gesl.org- plastische operatie van vu	n61	1
+n62	bloedgroepantigenen andere dan abo-rhesu	1
+n62	delta-4-androsteendion	1
+creatinine	n61	1
+tuba uterina- reanastomose na sterilisat	n33	1
+progesteron mbv radioisotopen	n61	1
+elutie van auto-antistoffen tegen erytro	n61	1
+aanname laboratoriumonderzoek	n61	1
+tau from tree	n6	1
+ct bovenbuik	n61	1
+n62	titratie directe antiglobulinetest - coo	1
+n62	echo bovenbuik	1
+squamous cell carcinoma mbv eia	n61	1
+tau from tree	n25	1
+tau from tree	n34	1
+n58	tau start	1
+simulator - gebruik voor aanvang megavol	n61	1
+leucocyten tellen -electronisch- spoed	n61	1
+toegangschir- c.v.d.-katheter perifeer b	n61	1
+co-hb kwn.	n61	1
+n29	ureum - spoed	1
+ct hersenen	n61	1
+protrombinetijd -quick owren of modif.-	n61	1
+n62	intensive care ligdag - 1e tot en met 5e	1
+n62	anti-chlamydia iga mbv elisa	1
+echo abdomen	n56	1
+titratie directe antiglobulinetest - coo	n61	1
+n62	inwend.geneesk.   aanv.kaart kosten-out	1
+n62	bezinkingssnelheid foto-elektrisch	1
+n29	tau start	1
+punctie tbv cytologisch onderzoek door p	n61	1
+cytologisch onderzoek - buiktumorpunctie	n41	1
+hemoglobine a1	n61	1
+n45	dikke darm  - sigmoidoscopie met flexibe	1
+n38	hyperthermie	1
+ovarium     - redebulking ovarium carcin	n40	1
+verlosk.-gynaec.  aanv.kaart kosten-out	n61	1
+telefonisch consult	n61	1
+n39	tau from tree	1
+n62	kreatinine fosfokinase - spoed	1
+n62	natrium vlamfotometrisch	1
+vulva       - biopsie-punctie-cytologie	n42	1
+n62	osmolaliteit	1
+n62	bacteriologisch onderzoek met kweek -nie	1
+histologisch onderzoek - biopten nno	n61	1
+unknown	n25	1
+o2-saturatie	n61	1
+transferrine mbv ics	n61	1
+n34	cervix      - conisatie	1
+n62	creatinefosfokinase -kinetisch-	1
+tau from tree	n57	1
+inwend.geneesk.   aanv.kaart kosten-out	n61	1
+n29	analgesie   - epiduraal door anesthesist	1
+1e consult      bezoek	n61	1
+n62	trombotest	1
+tau from tree	n32	1
+n62	fsh enzym-immunologisch	1
+alkalische fosfatase -kinetisch-	n61	1
+n62	differentiele telling automatisch	1
+bilirubine kwantitatief totaal of direct	glucose - spoed	1
+n62	ca-125 mbv meia	1
+n46	tau from tree	1
+immunopathologisch onderzoek	n61	1
+thorax	n61	1
+n62	toegangschir- c.v.d.-katheter perifeer b	1
+ct hals	n61	1
+n62	ligdagen - alle spec.beh.kinderg.-reval.	1
+melkzuur enzymatisch	n61	1
+n14	behandelen  - in hyperpressietank	1
+tau from tree	n40	1
+histologisch onderzoek - kleine resectie	n61	1
+rhesusfactor d - centrifugeermethode - e	n61	1
+n62	knie - m-z onderbeen	1
+bloedstollingsfactor xi - activiteit	n61	1
+tau from tree	n7	1
+n6	inwend.geneesk.    jaarkaart kosten-out	1
+echo been	n61	1
+n9	buik        - punctie ascites ontlastend	1
+anticoagulans lupus mbv elisa	n61	1
+n62	kalium vlamfotometrisch - spoed	1
+n63	interc.consult vervolg klinisch  chirurg	1
+haemoglobine foto-electrisch - spoed	n61	1
+glucose - spoed	n15	1
+n61	tau from tree	1
+ligase chain reaction -lcr-	n46	1
+bloedgroepbep. anders dan abo per bloedg	n61	1
+factor v leiden -r506q- mbv dna-test	n61	1
+n37	ovarium     - redebulking ovarium carcin	1
+n41	echografie  - blaas - extern	1
+n48	skelet - scintigrafie totale lichaam	1
+n62	prolactine mbv eia	1
+n56	tau from tree	1
+n9	lymf.syst.  - stageringslymfadenectomie	1
+tau start	n60	1
+n62	reticulocyten tellen mbv facscan	1
+n62	brain natriuretic peptide -bnp- mbv immu	1
+n62	leukocyten tellen elektronisch	1
+n52	dagverpleging - alle spec.beh.kind.-rev.	1
+dhea-sulfaat met extractie mbv ria	n61	1
+n62	magnesium  -aas	1
+onderbeen	n61	1
+cytologisch onderzoek - lymfeklierpuncti	n61	1
+n40	schoudergewricht	1
+n62	ethanol -enzymatisch of gaschromatografi	1
+n62	ct abdomen	1
+n48	behandeltijd - eenheid t1 - megavolt	1
+mammografie thoraxwand	n16	1
+n62	cytologisch onderzoek - ectocervix -	1
+n62	klinische kaart - inwendige geneeskunde	1
+infuus      - inbrengen	n59	1
+n62	duplexscan - venen been	1
+n37	tau from tree	1
+gammaglutamyltranspeptidase	n61	1
+tau from tree	n42	1
+ct arterien hersenen	n53	1
+n62	alfa-1-foetoproteine	1
+von willebrand profiel mbv protease	n61	1
+n62	ct thorax	1
+vervolgconsult poliklinisch	n61	1
+vitamine d3	n61	1
+echogeleide als ass. bij punctie-biopsie	n18	1
+e.c.g.      - elektrocardiografie	n61	1
+n62	elutie van auto-antistoffen tegen erytro	1
+cytologisch onderzoek tbv bevolkingsonde	n6	1
+n53	echo hals --waaronder schildklier--	1
+crp c-reactief proteine - spoed	n61	1
+tau from tree	n60	1
+interc.consult vervolg klinisch  chirurg	n59	1
+n62	totaal eiwit	1
+n1	tau start	1
+n62	vitamine b3	1
+hemoglobine foto-elektrisch	n61	1
+n62	gamma glutamyltranspeptidase - spoed	1
+n62	betasubunit bep. mbv. ria hcg	1
+bacteriologisch onderzoek met kweek -nie	n61	1
+n62	ferritine kwn mbv chemieluminescentie	1
+hyperthermie	n28	1
+bekken - staand	n49	1
+n62	interc.consult klinisch  anesthesie	1
+n62	international normalised ratio mbv tromb	1
+n62	proteine-s-antigeen -vrij	1
+n60	infuus      - inbrengen	1
+cytologisch onderzoek - vagina -	n61	1
+n43	tau from tree	1
+actuele ph - pco2 - stand.bicarbonaat	n61	1
+n62	squamous cell carcinoma mbv eia	1
+n62	paclitaxel	1
+onderz. naar aanwezigheid van koude anti	n61	1
+albumine	n61	1
+oestradiol mbv radioisotopen -ria	n61	1
+tau from tree	n9	1
+190204 klasse 3a        a204	n61	1
+n8	tau from tree	1
+tau from tree	n62	1
+screening antistoffen erytrocyten	n61	1
+n5	onderzoek van elders niet beoordeeld	1
+tau from tree	n5	1
+n62	histologisch onderzoek - kleine resectie	1
+wervelkolom - cervicaal	wervelkolom - thoracaal	1
+protrombinetijd	n61	1
+n62	bovenbeen	1
+cytologisch onderzoek - endocervix -	n7	1
+vagina      - scopie incl.evt.vulvabiops	n41	1
+tau from tree	n3	1
+tau from tree	n14	1
+pyelografie --wo niertransplantaat--	n41	1
+trombocyten tellen - spoed	n61	1
+trombinetijd	n61	1
+schoudergewricht	bovenarm	1
+intensive care ligdag - 1e tot en met 5e	n61	1
+peritoneum  - omentectomie	n15	1
+n40	echo nieren-urinewegen	1
+interc.consult klinisch  interne ziekten	n61	1
+hepatitis-b surface antigeen confirmatie	n61	1
+n62	natrium - vlamfotometrisch - spoed	1
+n62	verlosk.-gynaec. korte kaart kosten-out	1
+n64	tau from tree	1
+anti-hiv mbv elisa	n61	1
+tau from tree	n37	1
+behandeltijd - eenheid t3 - megavolt	n64	1
+tumor - petscan totale lichaam	n61	1
+digoxine	n61	1
+n62	ct hersenen	1
+inwend.geneesk.  korte kaart kosten-out	n51	1
+n62	protrombinetijd	1
+n9	patient niet verschenen ngiv- no show -	1
+cholesterol totaal	n61	1
+n62	directe antiglobulinetest - coombs	1
+n62	sgot asat kinetisch - spoed	1
+tau from tree	n33	1
+n62	totaal t3 - trijoodthyronine mbv radiois	1
+n62	gammaglutamyltranspeptidase	1
+creatinefosfokinase -kinetisch-	n61	1
+fibrinogeen	n61	1
+behandeltijd - eenheid t2 - megavolt	n41	1
+cito histologisch onderzoek	n61	1
+tau from tree	n45	1
+n62	sgot - asat kinetisch	1
+tau from tree	n26	1
+tau from tree	n50	1
+n62	osmolaliteit - spoed	1
+tau start	n14	1
+bloedgroepantigenen andere dan abo-rhesu	n61	1
+n62	trombinetijd	1
+cde fenotypering	n61	1
+190035 dagverpleging    a007	n61	1
+n55	bekken	1
+vitamine b2	n61	1
+dagverpleging - alle spec.beh.kind.-rev.	n53	1
+n9	tau from tree	1
+n60	vriescoupe	1
+differentiele telling automatisch	n61	1
+n62	microscopisch onderzoek - gekleurd en on	1
+cervix      - conisatie	n36	1
+190101 bovenreg.toesl.  a101	n61	1
+n62	interc.consult klinisch  reumatologie	1
+bovenbeen	n61	1
+interc.consult klinisch  radiotherapie	n61	1
+n49	tau from tree	1
+n62	vervolgconsult poliklinisch	1
+n62	bloedgroep abo en rhesusfactor	1
+n62	colon inloop	1
+tau from tree	n41	1
+vulva       - rad.vulvectomie - opp.en d	n61	1
+buikoverzicht - op zaal	n63	1
+ct bekken	n61	1
+melkzuur enzymatisch - spoed	n61	1
+tau start	n62	1
+n62	urine onderzoek - kwalitatief	1
+n49	opname volgens barsonie	1
+n8	vulva       - radicale vulvect. znd ingu	1
+dikke darm  - sigmoidoscopie met flexibe	n46	1

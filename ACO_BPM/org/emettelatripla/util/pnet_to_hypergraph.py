@@ -23,7 +23,8 @@ from org.emettelatripla.util.graph_space_interface import upload_graphspace
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-file_name = "C://BPMNexamples/review.pnml"
+file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
+file_name = "C://BPMNexamples/real_logs/hospital_inductive.pnml"
 
 tree = ET.parse(file_name)
 pnet = tree.getroot()
@@ -70,6 +71,9 @@ def get_arcs(pnet):
 
 def get_transition_name(t):
     return t.find("./name/text").text
+
+def set_transition_name(t, name):
+    t.find("./name/text").text = name
 
 def get_id(element):
     return element.attrib['id']
@@ -118,7 +122,84 @@ def convert_pnet_to_hypergraph_andgatewayonly(pnet):
     print_hg_std_out_only(hg)
     return hg
 
+def tau_pre_processing_pnet(pnet):
+    """ Assign progressive numbers to tau-split and tau-join transitions (to manage multiple occurrence)"""
+    logger.info("Pre processing tau-split-join transitions...")
+    transitions = get_transitions(pnet)
+    i = 0
+    j = 0
+    for transition in transitions:
+        if get_transition_name(transition) == 'tau split':
+            logger.info("Pre processing, updating tau-split transition: {0}".format(get_transition_name(transition)))
+            set_transition_name(transition, 'tau split'+str(i))
+            i = i+1
+        if get_transition_name(transition) == 'tau join':
+            logger.info("Pre processing, updating tau-join transition: {0}".format(get_transition_name(transition)))
+            set_transition_name(transition, 'tau join'+str(j))
+            j = j+1
+
+def tau_post_processing(hg):
+    """ POST-PROCESSING of tau-split, tau-join nodes (in pnets created from inductive miner"""
+    # tau-from-tree nodes don't have to be processed?
+    # TO BE COMPLETED
+    # TO BE COMPLETED
+    nodes = hg.get_node_set()
+    for node in nodes:
+        node_name = hg.get_node_attribute(node, 'name')
+        if node_name[:8] == 'tau join':
+            #getbackward star
+            b_star = hg.get_backward_star(node)
+            #get tails of backward star h_edges
+            tails = []
+            for edge in b_star:
+                tails = list(set(tails).union(hg.get_hyperedge_tail(edge)))
+                hg.remove_hyperedge(edge)
+            #create new h_edge
+            head = []
+            head.append(node)
+            hg.add_hyperedge(tails, head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+        node_name = hg.get_node_attribute(node, 'name')
+        if node_name[:9] == 'tau split':
+            #get forward star
+            f_star = hg.get_forward_star(node)
+            heads = []
+            for edge in f_star:
+                heads = list(set(heads).union(hg.get_hyperedge_head(edge)))
+                hg.remove_hyperedge(edge)
+            #create new h_edge
+            tail = []
+            tail.append(node)
+            hg.add_hyperedge(tail, heads, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+    return hg
+
+def tau_reduction(hg):
+    """ reduces a hypergraph by deleting the tau-split/join nodes"""
+    nodes = hg.get_node_set()
+    for node in nodes:
+        node_name = hg.get_node_attribute(node, 'name')
+        """ Reduce tau splits """
+        if node_name[:9] == 'tau split' or node_name[:8] == 'tau join':
+            logger.info("Found new tau transition to reduce: {0}".format(node_name))
+            #get forward star and build head for new hyperedge
+            f_star = hg.get_forward_star(node)
+            new_head = []
+            for edge in f_star:
+                new_head = list(set(new_head).union(hg.get_hyperedge_head(edge)))
+            #remove current hyperedge
+            hg.remove_hyperedge(edge)
+            #get backward star and build tail of new hyperedge
+            b_star = hg.get_backward_star(node)
+            new_tail = []
+            for edge in b_star:
+                new_tail = list(set(new_tail).union(hg.get_hyperedge_tail(edge)))
+            hg.remove_hyperedge(edge)
+            #create new hyperedge
+            hg.add_hyperedge(new_tail, new_head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+    return hg
+
 def convert_pnet_to_hypergraph(pnet):
+    """ pre-process pnet to number tau-split and tau-join transitions"""
+    tau_pre_processing_pnet(pnet)
     """ Convert a Petri net (in pnml format) into a hypergraph (Halp format) """
     hg = DirectedHypergraph()
     transitions = get_transitions(pnet)
@@ -137,7 +218,7 @@ def convert_pnet_to_hypergraph(pnet):
             if (len(out_arcs) == 0):
                 isSink = True
             logger.info("STEP 1 - Creating xor-join node -- {0}".format(node_id))
-            hg.add_node(node_id, source = isSource, sink = isSink, type = 'xor-join')
+            hg.add_node(node_id, source = isSource, sink = isSink, type = 'xor-join', name = " ")
             head = []
             head.append(node_id)
             isSink = False
@@ -163,7 +244,7 @@ def convert_pnet_to_hypergraph(pnet):
                 if (len(inc_arcs) == 0):
                     isSource = True
                 logger.info("STEP 1 - Creating xor-split node -- {0}".format(node_id))
-                hg.add_node(node_id, source = isSource, sink = isSink, type = 'xor-split')
+                hg.add_node(node_id, source = isSource, sink = isSink, type = 'xor-split', name = " ")
                 #create node for all targets of outgoing arcs
                 isSink = False
                 isSource = False
@@ -184,24 +265,26 @@ def convert_pnet_to_hypergraph(pnet):
         isSink = False
         isSource = False
         #check if transition is not a node in hg and add if needed
-        if (not hg.has_node(get_transition_name(transition))):
-            #check if transition is start
-            inc_arcs = get_incoming_arcs(transition)
-            for inc_arc in inc_arcs:
-                source_place = get_element(get_arc_source(inc_arc))
-                place_inc = get_incoming_arcs(source_place)
-                if not place_inc:
-                    isSource = True
-            #check if trsnasition is end event
-            out_arcs = get_outgoing_arcs(transition)
-            for out_arc in out_arcs:
-                sink_place = get_element(get_arc_target(out_arc))
-                place_out = get_outgoing_arcs(sink_place)
-                if not place_out:
-                    isSink = True
-            #create node in hypergraph
-            logger.info("STEP 2 - Creating transition node")
-            hg.add_node(get_transition_name(transition), source = isSource, sink = isSink, type = 'transition', name = get_transition_name(transition))
+        #if (not hg.has_node(get_transition_name(transition))):
+        #check if transition is start
+        inc_arcs = get_incoming_arcs(transition)
+        for inc_arc in inc_arcs:
+            source_place = get_element(get_arc_source(inc_arc))
+            place_inc = get_incoming_arcs(source_place)
+            if not place_inc:
+                isSource = True
+                logger.info("Transition is START: {0}".format(get_transition_name(transition)))
+        #check if trsnasition is end event
+        out_arcs = get_outgoing_arcs(transition)
+        for out_arc in out_arcs:
+            sink_place = get_element(get_arc_target(out_arc))
+            place_out = get_outgoing_arcs(sink_place)
+            if not place_out:
+                isSink = True
+                logger.info("Transition is END: {0}".format(get_transition_name(transition)))
+        #create node in hypergraph
+        logger.info("STEP 2 - Creating transition node")
+        hg.add_node(get_transition_name(transition), source = isSource, sink = isSink, type = 'transition', name = get_transition_name(transition))
         #look BACKWARD 
         if not isSource:
             inc_arcs = get_incoming_arcs(transition)
@@ -274,15 +357,79 @@ def convert_pnet_to_hypergraph(pnet):
             if(head):
                 logger.info("STEP 2 - Creating real forward  hyperedge - TAIL {0} -- HEAD {1} ".format(str(x_tail),str(head)))
                 hg.add_hyperedge(x_tail, head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
-    """ POST-PROCESSING of tau-split, tau-join nodes (in pnets created from inductive miner"""
-    # tau-from-tree nodes don't have to be processed?
-    # TO BE COMPLETED
-    # TO BE COMPLETED
+    ## POST PROCESSING of tau-split/join generated by inductive miner
+    hg = tau_post_processing(hg)
+    #reduction of tau splits and joins
+    hg = tau_reduction(hg)
     return hg
 
+def number_of_start_events(hg):
+    nodes = hg.get_node_set()
+    i = 0
+    for node in nodes:
+        is_source = hg.get_node_attribute(node, 'source')
+        if is_source:
+            i = i+1
+    return i
+    
+    
+def number_of_end_events(hg):
+    nodes = hg.get_node_set()
+    i = 0
+    for node in nodes:
+        is_source = hg.get_node_attribute(node, 'sink')
+        if is_source:
+            i = i+1
+    return i
+
+def number_of_xor_splits(hg):
+    """ returns number of xor-splits"""
+    return get_statistics(hg)['xor-split']
+
+def number_of_xor_joints(hg):
+    """ returns number of xor-joints"""
+    return get_statistics(hg)['xor-join']
+
+def number_of_activities(hg):
+    """ returns number of activities (ie. number of transitions excluding xor splits and joins)"""
+    return get_statistics(hg)['activities']
+
+def number_of_transitions(hg):
+    """returns total number of transitions (including xor splits/joins)"""
+    return get_statistics(hg)['transitions']
+
+def get_statistics(hg):
+    """ returns some basic statistics of the hypergraph in a dictionary"""
+    stats = {}
+    xor_splits = 0
+    xor_joins = 0
+    total_trans = 0
+    activities = 0
+    nodes = hg.get_node_set()
+    for node in nodes:
+        total_trans = total_trans + 1
+        node_type = hg.get_node_attribute(node,'type')
+        if node_type == "xor-split":
+            xor_splits = xor_splits + 1
+        elif node_type == "xor-join":
+            xor_joins = xor_joins + 1
+        else:
+            activities = activities + 1
+            
+    stats.update({'xor-split' : xor_splits})
+    stats.update({'xor-join' : xor_joins})
+    stats.update({'activities' : activities})
+    stats.update({'transitions' : total_trans})
+    return stats
+
+def print_statistics(hg):
+    print(str(get_statistics(hg)))
 
 hg = convert_pnet_to_hypergraph(pnet)
 print_hg(hg, "hyp_file.txt")
+logger.info("Number of start events: {0}".format(number_of_start_events(hg)))
+logger.info("Number of end events: {0}".format(number_of_end_events(hg)))
+print_statistics(hg)
 
 
 #hg = convert_pnet_to_hypergraph_andgatewayonly(pnet)
