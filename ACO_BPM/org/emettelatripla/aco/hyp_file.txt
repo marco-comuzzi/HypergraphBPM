@@ -1,10 +1,8 @@
 tail	head	weight
-C	F	3
-B	C	3
-A	B	2
-D,E	F	3
-E,H	F	3
-G	H	3
-A	D,E	100
-A	G	1
-H	F	3
+determine likelihood of claim	assess claim	1
+advise claimant on reimbursement,close claim	n7	1
+n7	end	1
+register claim	determine likelihood of claim	1
+assess claim	n6	1
+n6	initiate payment,advise claimant on reimbursement	1
+check if sufficient information is available	register claim	1

@@ -8,32 +8,37 @@ from org.emettelatripla.util.util import *
 from collections import OrderedDict
 import random
 import operator
+from random import uniform
+import logging
 
 
-def partial_phero_update(hg_phero, p):
+def partial_phero_update(hg_phero, p, w_cost, w_time, w_qual, w_avail):
     #update the phero level of all nodes in p
     p_edge_set = p.get_hyperedge_id_set()
-    p_utility = calculate_utility(p)
+    p_utility = calculate_utility(p, w_cost, w_time, w_qual, w_avail)
     #for now, utility is the cost
     for p_edge in p_edge_set:
-        curr_phero = hg_phero.get_hyperedge_attribute(p_edge, 'phero')
-        p.add_hyperedge(p.get_hyperedge_tail(p_edge), p.get_hyperedge_head(p_edge), phero = curr_phero + p_utility)
-        print("Phero value: "+str(p.get_hyperedge_attribute(p_edge, 'phero')))
+        p_edge_id = p.get_hyperedge_attribute(p_edge, 'id')
+        curr_phero = hg_phero.get_hyperedge_attribute(p_edge_id, 'phero')
+        p.add_hyperedge(p.get_hyperedge_tail(p_edge), p.get_hyperedge_head(p_edge), phero = curr_phero + p_utility, id = p_edge_id)
+        print("Partial phero update - Phero value: "+str(p.get_hyperedge_attribute(p_edge, 'phero')))
+        print("Partial phero update - id: "+str(p.get_hyperedge_attribute(p_edge, 'id')))
        
 #tau is the evaporation coefficient
 def final_phero_update(hg, hg_partial, tau):
     edge_set = hg_partial.get_hyperedge_id_set()
     for edge in edge_set:
+        edge_id = hg_partial.get_hyperedge_attribute(edge, 'id')
         #evaporate current phero on hg and add partial update from hg_partial
-        evap_u = tau * hg.get_hyperedge_attribute(edge, 'phero')
+        evap_u = tau * hg.get_hyperedge_attribute(edge_id, 'phero')
         new_phero = evap_u + hg_partial.get_hyperedge_attribute(edge, 'phero')
-        hg.add_hyperedge(hg_partial.get_hyperedge_tail(edge), hg_partial.get_hyperedge_head(edge), phero = new_phero)
+        hg.add_hyperedge(hg_partial.get_hyperedge_tail(edge), hg_partial.get_hyperedge_head(edge), phero = new_phero, id = edge_id)
     
     
 #must be parameterised with weoghts    
 def calculate_utility(hg, w_cost, w_time, w_qual, w_avail):
     utility = 0.0
-    utility = (w_cost * calculate_utility(hg)) + (w_time * calc_utility_time(hg)) + (w_qual * calc_utility_qual(hg)) + (w_avail * calc_utility_avail(hg))
+    utility = (w_cost * calc_utility_cost(hg)) + (w_time * calc_utility_time(hg)) + (w_qual * calc_utility_qual(hg)) + (w_avail * calc_utility_avail(hg))
     return utility
 
 #this simply calculates utility as sum of cost
@@ -94,6 +99,8 @@ def calc_utility_avail(p):
         
 #debugged!
 def phero_choice(edge_set, hg):
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
     #create an ordered list of tuples (edge_id, phero_value)
     dic = {}
     for edge in edge_set:
@@ -139,7 +146,27 @@ def phero_choice(edge_set, hg):
     #calculate chosen edge
     #print("Chosen edge i: "+str(i))
     chosen_edge = hash_edgeid[edge_in] 
-    print("^^^ Edge selected based on pheromone choice: ")
+    logger.info("^^^ Edge selected based on pheromone choice: ")
     print_hyperedge(chosen_edge, hg)
-    print("^^^ end selected hyperedge print ^^^^")
+    logger.info("^^^ end selected hyperedge print ^^^^")
     return chosen_edge
+
+def random_init_attributes(hg):
+    """ Initialise the attributes cost, qual, avail, and time of a hypergraph
+    to random values drawn from a uniform distribution [0,1]"""
+    nodes = hg.get_node_set()
+    for node in nodes:
+        cost = uniform(0,1)
+        qual = uniform(0,1)
+        avail = uniform(0,1)
+        time = uniform(0,1)
+        attrs = hg.get_node_attributes(node)
+        #hg.remove_node(node)
+        attrs.update({'cost' : cost})
+        attrs.update({'qual' : qual})
+        attrs.update({'avail' : avail})
+        attrs.update({'time' : time})
+        hg.add_node(node, attrs)
+    return hg
+        
+        

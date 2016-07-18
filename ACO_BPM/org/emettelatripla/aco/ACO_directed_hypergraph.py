@@ -4,9 +4,13 @@ Created on Jun 16, 2016
 @author: UNIST
 '''
 
+import logging
 from halp.directed_hypergraph import DirectedHypergraph 
 from org.emettelatripla.aco.ACO_util import *
 from org.emettelatripla.util.util import *
+
+#setup logger
+
 
 
 # node_set: the source node set (only one node in process models)
@@ -14,7 +18,16 @@ from org.emettelatripla.util.util import *
 #ANT_NUM number of ants in one colony
 #COL_NUM number of colonies
 #tau: pheromone evaporation coefficient 
-def aco_algorithm(node_set, hg, ANT_NUM, COL_NUM, tau):
+#W_UTILITY: weights of the utility function
+def aco_algorithm(node_set, hg, ANT_NUM, COL_NUM, tau, W_UTILITY):
+    #set the values of the utility function weights
+    W_COST = W_UTILITY['cost']
+    W_AVAIL = W_UTILITY['avail']
+    W_QUAL = W_UTILITY['qual']
+    W_TIME = W_UTILITY['time']
+    #setup the logger
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
     #currently optimal path
     p_opt = DirectedHypergraph()
     utility_opt = 0.0
@@ -23,7 +36,7 @@ def aco_algorithm(node_set, hg, ANT_NUM, COL_NUM, tau):
     while col < COL_NUM:
         #counter for ant number
         ant = 0
-        print("Processing colony n. "+str(col))
+        logger.info("Processing COLONY n. {0}".format(col))
         #h_graph to store partial pheromone update
         hg_phero = hg.copy()
         #do something
@@ -32,32 +45,34 @@ def aco_algorithm(node_set, hg, ANT_NUM, COL_NUM, tau):
         for node in node_set:
             p.add_node(node, hg.get_node_attributes(node))
         while ant < ANT_NUM:
-            print("--- Processing ant n. "+str(ant))
+            logger.info("--- Processing COLONY n. {1}, ANT n. {0}".format(ant, col))
             #call aco_search on p
             p = aco_search(p, hg, node_set)
+            #PRINT CURRENT OPTIMAL PATH
             print_hg(p,'hyp_file.txt')
             #calculate utility of p
-            utility = calculate_utility(p)
-            #calculate partial pheromone update
-            partial_phero_update(hg_phero, p)
+            utility = calculate_utility(p, W_COST, W_TIME, W_QUAL, W_AVAIL)
+            #do partial pheromone update
+            partial_phero_update(hg_phero, p, W_COST, W_TIME, W_QUAL, W_AVAIL)
             #check if p is better than current optimal solution
             #update if p is optimal
-            print("Utility of current path: "+str(utility)+" (opt utility: "+str(utility_opt)+")")
+            logger.info("Utility of current path: {0} ".format(utility))
+            logger.info("Current OPTIMAL UTILITY: {0}".format(utility_opt))
             if utility > utility_opt:
                 utility_opt = utility
                 p_opt = p
-                print("optimal path updated!")
+                logger.info("***** optimal path updated!!! *****")
             ant = ant + 1
             #pheromone update
             #TBC TBC
         col = col + 1
-        #actual pheromone update
+        #actual pheromone update after processing an entire colony
         final_phero_update(hg, p_opt, tau)
     #do something else
-    print("********** OPTIMAL PATH FOUND ******************")
+    logger.warning("********** OPTIMAL PATH FOUND ******************")
     print_hg(p_opt, 'hyp_file.txt')
-    print("UTILITY: "+str(calculate_utility(p_opt)))
-    print("***********************************************")
+    logger.warning("****** UTILITY: "+str(calculate_utility(p_opt, W_COST, W_TIME, W_QUAL, W_AVAIL)))
+    logger.warning("***********************************************")
 
 #node_set: current position (can be a set of nodes) in the search
 #p: current path
@@ -73,7 +88,12 @@ def aco_search(p, hg, node_set):
     head = hg.get_hyperedge_head(next_edge)
     attrs = hg.get_hyperedge_attributes(next_edge)
     print_hyperedge(next_edge, hg)
+    #get the id of the next_edge and use it as id of new edge in p
+    id = next_edge
+    attrs.update({'id' : id})
     #add selected hyperedge/node to p
+    if p.has_hyperedge(tail, head):
+        i=0
     p.add_hyperedge(tail, head, attrs)
     next_head = hg.get_hyperedge_head(next_edge)
     for node in next_head:

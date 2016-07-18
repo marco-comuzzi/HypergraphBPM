@@ -18,37 +18,11 @@ from networkx.classes.digraph import DiGraph
 from networkx.classes.digraph import Graph
 from org.emettelatripla.util import util
 from org.emettelatripla.util.graph_space_interface import upload_graphspace
+from org.emettelatripla.aco.ACO_util import random_init_attributes
 
 #setup the logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
-file_name = "C://BPMNexamples/real_logs/hospital_inductive.pnml"
-
-tree = ET.parse(file_name)
-pnet = tree.getroot()
-
-print(pnet.tag)
-
-# places = pnet.findall("./net/page/place")
-# 
-# for place in places:
-#     logger.info("Found new place: "+str(place.attrib['id']))
-#     
-transitions = pnet.findall("./net/page/transition")
-# 
-for transition in transitions:
-    name = transition.find("./name/text").text
-    logger.info("Found new Transition: "+str(transition.attrib['id'])+" NAME: "+name)
-     
-# arcs = pnet.findall("./net/page/arc")
-# 
-# for arc in arcs:
-#     id = str(arc.attrib['id'])
-#     source = str(arc.attrib['source'])
-#     target = str(arc.attrib['target'])
-#     logger.info("Found new arc --- ID: "+id+" SOURCE: "+source+" TARGET: "+target)
 
 
     
@@ -57,7 +31,7 @@ for transition in transitions:
 # Some useful functions to process pnml
 # ====================
 
-def get_element(id):
+def get_element(id, pnet):
     return pnet.find("./net/page/*[@id='"+id+"']")
 
 def get_places(pnet):
@@ -84,12 +58,12 @@ def get_arc_source(arc):
 def get_arc_target(arc):
     return arc.attrib['target']
 
-def get_incoming_arcs(element):
+def get_incoming_arcs(element, pnet):
     t_id = get_id(element)
     inc_arcs = pnet.findall("./net/page/arc[@target='"+t_id+"']")
     return inc_arcs
 
-def get_outgoing_arcs(element):
+def get_outgoing_arcs(element, pnet):
     t_id = get_id(element)
     inc_arcs = pnet.findall("./net/page/arc[@source='"+t_id+"']")
     return inc_arcs
@@ -105,13 +79,13 @@ def convert_pnet_to_hypergraph_andgatewayonly(pnet):
     transitions = get_transitions(pnet)
     for transition in transitions:
         #get all incoming arcs, the source of these become the tail of hyperedge
-        inc_arcs = get_incoming_arcs(transition)
+        inc_arcs = get_incoming_arcs(transition,pnet)
         tail = []
         for inc_arc in inc_arcs:
             source = str(get_arc_source(inc_arc))
             tail.append(source)
         #get all outgoing arcs, the target of these become the head of the hyperedge
-        out_arcs = get_outgoing_arcs(transition)
+        out_arcs = get_outgoing_arcs(transition,pnet)
         head = []
         for out_arc in out_arcs:
             target = str(get_arc_target(out_arc))
@@ -207,8 +181,8 @@ def convert_pnet_to_hypergraph(pnet):
     """STEP 1: Pre-process places to find xor places (splits and joints)
     If input/output of a transitions is 2 or more places, then mark those places as "X" and put in hypergraph"""
     for place in places:
-        inc_arcs = get_incoming_arcs(place)
-        out_arcs = get_outgoing_arcs(place)
+        inc_arcs = get_incoming_arcs(place,pnet)
+        out_arcs = get_outgoing_arcs(place,pnet)
         isSink = False
         isSource = False
         if len(inc_arcs) > 1:
@@ -225,8 +199,8 @@ def convert_pnet_to_hypergraph(pnet):
             isSource = False
             #create node for all source of incoming arcs
             for arc in inc_arcs:
-                node_id2 = get_id(get_element(get_arc_source(arc)))
-                node_name = get_transition_name(get_element(get_arc_source(arc)))
+                node_id2 = get_id(get_element(get_arc_source(arc), pnet))
+                node_name = get_transition_name(get_element(get_arc_source(arc), pnet))
                 logger.info("STEP 1 - Creating transition node -- {0} -- {1}".format(node_id, node_name))
                 hg.add_node(node_name, source = isSource, sink = isSink, type = 'transition', name = node_name)
                 tail = []
@@ -249,8 +223,8 @@ def convert_pnet_to_hypergraph(pnet):
                 isSink = False
                 isSource = False
                 for arc in out_arcs:
-                    node_id2 = get_id(get_element(get_arc_target(arc)))
-                    node_name = get_transition_name(get_element(get_arc_target(arc)))
+                    node_id2 = get_id(get_element(get_arc_target(arc), pnet))
+                    node_name = get_transition_name(get_element(get_arc_target(arc),pnet))
                     if(not hg.has_node(node_id2)):
                         logger.info("STEP 1 - Creating transition node -- {0} -- {1}".format(node_id, node_name))
                         hg.add_node(node_name, source = isSource, sink = isSink, type = 'transition', name = node_name)
@@ -267,18 +241,18 @@ def convert_pnet_to_hypergraph(pnet):
         #check if transition is not a node in hg and add if needed
         #if (not hg.has_node(get_transition_name(transition))):
         #check if transition is start
-        inc_arcs = get_incoming_arcs(transition)
+        inc_arcs = get_incoming_arcs(transition,pnet)
         for inc_arc in inc_arcs:
-            source_place = get_element(get_arc_source(inc_arc))
-            place_inc = get_incoming_arcs(source_place)
+            source_place = get_element(get_arc_source(inc_arc),pnet)
+            place_inc = get_incoming_arcs(source_place,pnet)
             if not place_inc:
                 isSource = True
                 logger.info("Transition is START: {0}".format(get_transition_name(transition)))
         #check if trsnasition is end event
-        out_arcs = get_outgoing_arcs(transition)
+        out_arcs = get_outgoing_arcs(transition,pnet)
         for out_arc in out_arcs:
-            sink_place = get_element(get_arc_target(out_arc))
-            place_out = get_outgoing_arcs(sink_place)
+            sink_place = get_element(get_arc_target(out_arc),pnet)
+            place_out = get_outgoing_arcs(sink_place,pnet)
             if not place_out:
                 isSink = True
                 logger.info("Transition is END: {0}".format(get_transition_name(transition)))
@@ -287,14 +261,14 @@ def convert_pnet_to_hypergraph(pnet):
         hg.add_node(get_transition_name(transition), source = isSource, sink = isSink, type = 'transition', name = get_transition_name(transition))
         #look BACKWARD 
         if not isSource:
-            inc_arcs = get_incoming_arcs(transition)
+            inc_arcs = get_incoming_arcs(transition,pnet)
             tail = []
             x_head = [get_transition_name(transition)]
             xplace_list = []
             otherp_list = []
             xplace_tail = []
             for inc_arc in inc_arcs:
-                place = get_element(get_arc_source(inc_arc))
+                place = get_element(get_arc_source(inc_arc),pnet)
                 #separate xor places from other forward places of this transition
                 if(hg.has_node(get_id(place))):
                     xplace_list.append(place)
@@ -323,14 +297,14 @@ def convert_pnet_to_hypergraph(pnet):
 #                 hg.add_hyperedge(tail, x_head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
         #look FORWARD
         if not isSink:
-            out_arcs = get_outgoing_arcs(transition)
+            out_arcs = get_outgoing_arcs(transition,pnet)
             head = []
             x_tail = [get_transition_name(transition)]
             xplace_list = []
             otherp_list = []
             xplace_head = []
             for out_arc in out_arcs:
-                place = get_element(get_arc_target(out_arc))
+                place = get_element(get_arc_target(out_arc),pnet)
                 #separate xor places from other forward places of this transition
                 if(hg.has_node(get_id(place))):
                     xplace_list.append(place)
@@ -350,9 +324,9 @@ def convert_pnet_to_hypergraph(pnet):
                 #create forward normal hyperdge
             head = []
             for place in otherp_list:
-                out_arcs_l2 = get_outgoing_arcs(place)
+                out_arcs_l2 = get_outgoing_arcs(place,pnet)
                 for out_arc_l2 in out_arcs_l2:
-                    trans2 = get_element(get_arc_target(out_arc_l2))
+                    trans2 = get_element(get_arc_target(out_arc_l2),pnet)
                     head.append(get_transition_name(trans2))
             if(head):
                 logger.info("STEP 2 - Creating real forward  hyperedge - TAIL {0} -- HEAD {1} ".format(str(x_tail),str(head)))
@@ -424,12 +398,47 @@ def get_statistics(hg):
 
 def print_statistics(hg):
     print(str(get_statistics(hg)))
+    
+    
+def main():
+    
+    
+    file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
+    #file_name = "C://BPMNexamples/real_logs/hospital_inductive.pnml"
+    
+    tree = ET.parse(file_name)
+    pnet = tree.getroot()
+    
+    print(pnet.tag)
+    
+    # places = pnet.findall("./net/page/place")
+    # 
+    # for place in places:
+    #     logger.info("Found new place: "+str(place.attrib['id']))
+    #     
+    transitions = pnet.findall("./net/page/transition")
+    # 
+    for transition in transitions:
+        name = transition.find("./name/text").text
+        logger.info("Found new Transition: "+str(transition.attrib['id'])+" NAME: "+name)
+         
+    # arcs = pnet.findall("./net/page/arc")
+    # 
+    # for arc in arcs:
+    #     id = str(arc.attrib['id'])
+    #     source = str(arc.attrib['source'])
+    #     target = str(arc.attrib['target'])
+    #     logger.info("Found new arc --- ID: "+id+" SOURCE: "+source+" TARGET: "+target)
+    
+    hg = convert_pnet_to_hypergraph(pnet)
+    print_hg(hg, "hyp_file.txt")
+    logger.info("Number of start events: {0}".format(number_of_start_events(hg)))
+    logger.info("Number of end events: {0}".format(number_of_end_events(hg)))
+    print_statistics(hg)
 
-hg = convert_pnet_to_hypergraph(pnet)
-print_hg(hg, "hyp_file.txt")
-logger.info("Number of start events: {0}".format(number_of_start_events(hg)))
-logger.info("Number of end events: {0}".format(number_of_end_events(hg)))
-print_statistics(hg)
+#hg = random_init_attributes(hg)
+#print_hg(hg, "hyp_file.txt")
+
 
 
 #hg = convert_pnet_to_hypergraph_andgatewayonly(pnet)
@@ -444,6 +453,11 @@ print_statistics(hg)
 
 #Upload to graphspace (doesn't work, but it prints json that can be uploaded :)
 #upload_graphspace("mcomuzzi@unist.ac.kr", "Uniqlo4321", "test", dg, "test001", "hyp_file.json")
+    
+if __name__ == "__main__":
+    main()
+
+
 
 
 
