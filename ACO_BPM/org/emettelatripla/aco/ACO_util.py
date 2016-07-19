@@ -10,10 +10,16 @@ import random
 import operator
 from random import uniform
 import logging
+import xml.etree.ElementTree as ET
+from org.emettelatripla.util.pnet_to_hypergraph import get_transitions,\
+    get_transition_name
+import sys
 
 
 def partial_phero_update(hg_phero, p, w_cost, w_time, w_qual, w_avail):
     #update the phero level of all nodes in p
+    #logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='C://BPMNexamples/aco.log',level=logging.INFO)
+    logger = logging.getLogger(__name__)
     p_edge_set = p.get_hyperedge_id_set()
     p_utility = calculate_utility(p, w_cost, w_time, w_qual, w_avail)
     #for now, utility is the cost
@@ -21,8 +27,8 @@ def partial_phero_update(hg_phero, p, w_cost, w_time, w_qual, w_avail):
         p_edge_id = p.get_hyperedge_attribute(p_edge, 'id')
         curr_phero = hg_phero.get_hyperedge_attribute(p_edge_id, 'phero')
         p.add_hyperedge(p.get_hyperedge_tail(p_edge), p.get_hyperedge_head(p_edge), phero = curr_phero + p_utility, id = p_edge_id)
-        print("Partial phero update - Phero value: "+str(p.get_hyperedge_attribute(p_edge, 'phero')))
-        print("Partial phero update - id: "+str(p.get_hyperedge_attribute(p_edge, 'id')))
+        logger.debug("Partial phero update - Phero value: {0}".format(str(p.get_hyperedge_attribute(p_edge, 'phero'))))
+        logger.debug("Partial phero update - id: {0}".format(str(p.get_hyperedge_attribute(p_edge, 'id'))))
        
 #tau is the evaporation coefficient
 def final_phero_update(hg, hg_partial, tau):
@@ -99,7 +105,8 @@ def calc_utility_avail(p):
         
 #debugged!
 def phero_choice(edge_set, hg):
-    logging.basicConfig(level=logging.INFO)
+    #setup the logger
+    #logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='C://BPMNexamples/aco.log',level=logging.INFO)
     logger = logging.getLogger(__name__)
     #create an ordered list of tuples (edge_id, phero_value)
     dic = {}
@@ -127,8 +134,11 @@ def phero_choice(edge_set, hg):
     len_ch = len(cumul_hash)-1
     low = cumul_hash[0]
     high = cumul_hash[len_ch]
-    choice = random.uniform(low, high)
-    print("Random number is: "+str(choice))
+    choice = random.uniform(0, high)
+    logger.debug("Random number to choose next edge: {0} ==== Cumulative choice list: {1}".format(str(choice),str(cumul_hash)))
+    logger.debug("Sorted dict: {0}".format(str(sorted_dict)))
+    logger.debug("Hash pheroval: {0}".format(str(hash_pheroval)))
+    logger.debug("Hash edge_id: {0}".format(str(hash_edgeid)))
     #caculate the edge_id based on the drawn random number
     notFound = True
     i = 0
@@ -139,16 +149,19 @@ def phero_choice(edge_set, hg):
             notFound = False
             edge_in = i
         #general case
-        elif choice <= cumul_hash[i+1]:
+        elif choice <= cumul_hash[0]:
             notFound = False
-            edge_in = i
+            edge_in = 0
+        elif choice > cumul_hash[i] and choice <= cumul_hash[i+1]:
+            notFound = False
+            edge_in = i+1
         i = i+1
     #calculate chosen edge
     #print("Chosen edge i: "+str(i))
     chosen_edge = hash_edgeid[edge_in] 
-    logger.info("^^^ Edge selected based on pheromone choice: ")
+    logger.debug("^^^ Edge selected based on pheromone choice: {0}".format(str(chosen_edge)))
     print_hyperedge(chosen_edge, hg)
-    logger.info("^^^ end selected hyperedge print ^^^^")
+    logger.debug("^^^ end selected hyperedge print ^^^^")
     return chosen_edge
 
 def random_init_attributes(hg):
@@ -168,5 +181,72 @@ def random_init_attributes(hg):
         attrs.update({'time' : time})
         hg.add_node(node, attrs)
     return hg
+
+def get_transitions_from_opt_path(hg_opt):
+    """ returns the list of names of transition in the hypergraph (excluding xor splits and joins)"""
+    nodes = hg_opt.get_node_set()
+    transitions = []
+    for node in nodes:
+        if hg_opt.get_node_attribute(node, 'type') == 'transition':
+            transitions.append(hg_opt.get_node_attribute(node, 'name'))
+    return transitions
+
+def show_opt_path_pnet(hg_opt, tree):
+    """ given optimal path (hypergraph) and a Petri net, it highlights the optimal path in the Petri net
+    (highlihgting the non xor/tau transitions in the Petri net """
+    logger = logging.getLogger(__name__)
+    #get the list of transitions
+    pnet = tree.getroot()
+    transitions = get_transitions_from_opt_path(hg_opt)
+    #color
+    red_color = ET.Element('fill', color = '#c30e2d')
+    #for each transition, add fill color in pnet
+    trans_pnet = get_transitions(pnet)
+    for transition in transitions:
+        #find transition in pnet
+        for t_pnet in trans_pnet:
+            if t_pnet.find("./name/text").text == transition:
+                #transition found, add red_color as element
+                logger.debug("Transition found: {0}".format(transition))
+                graphics = t_pnet.find('graphics')
+                #graphics = t_children.Element('graphics')
+                graphics.append(red_color)
+    tree.write("C://BPMNexamples/highlight.pnml", encoding='utf-8')
+    
+def reduce_opt_path_pnet(tree):
+    """ given a pnet with highlighted optimal path, it deletes all the non relevant detail from the pnet"""
+    logger = logging.getLogger(__name__)
+    logger.debug("Reducing pnet...")
+    pnet = tree.getroot()
+    #STEP 1: delete not highlighted transitions
+    #trans_pnet = get_transitions(pnet)
+    trans_pnet = pnet.findall('.net/page/transition')
+    page = pnet.findall('.net/page')
+    for t_pnet in trans_pnet:
+        graphics = t_pnet.find('graphics')
+        fills = graphics.findall('fill')
+        delete = True
+        for fill in fills:
+            if fill.attrib['color'] == '#c30e2d':
+                delete = False
+        if delete:
+            #remove transition
+            logger.debug("Found transitions to remove (reduce): {0}".format(get_transition_name(t_pnet)))
+            #t2s = pnet.findall('.net/page/transition')
+            t_name = get_transition_name(t_pnet)
+            page = pnet.find('./net/page')
+            #find arcs to remove
+            t_id = t_pnet.get('id')
+            arcs = pnet.findall('./net/page/arc')
+            for arc in arcs:
+                if arc.get('source') == t_id or arc.get('target') == t_id:
+                    page.remove(arc)
+            #remove transition
+            page.remove(t_pnet)      
+    #STEP 2: delete arcs sourcing from or targeting non highlighted transitions and places
+    # TO BE COMPLETED
+    #write the output
+    tree.write("C://BPMNexamples/reduced.pnml", encoding='utf-8')
+        
         
         

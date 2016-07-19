@@ -12,16 +12,16 @@ from halp.directed_hypergraph import DirectedHypergraph
 from halp.utilities.directed_graph_transformations import to_networkx_digraph
 import matplotlib.pyplot as plt
 import networkx as nx
-from org.emettelatripla.aco.ACO_util import *
-from org.emettelatripla.util.util import *
 from networkx.classes.digraph import DiGraph
 from networkx.classes.digraph import Graph
 from org.emettelatripla.util import util
 from org.emettelatripla.util.graph_space_interface import upload_graphspace
-from org.emettelatripla.aco.ACO_util import random_init_attributes
+#from org.emettelatripla.aco.ACO_util import random_init_attributes
+from org.emettelatripla.util.util import print_hg_std_out_only
+from org.emettelatripla.util.util import print_hg
 
 #setup the logger
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='C://BPMNexamples/aco.log',level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -91,24 +91,24 @@ def convert_pnet_to_hypergraph_andgatewayonly(pnet):
             target = str(get_arc_target(out_arc))
             head.append(target)
         name = get_transition_name(transition)
-        hg.add_hyperedge(tail, head, name = name, phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+        hg.add_hyperedge(tail, head, name = name, phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
     #print the result before exit
     print_hg_std_out_only(hg)
     return hg
 
 def tau_pre_processing_pnet(pnet):
     """ Assign progressive numbers to tau-split and tau-join transitions (to manage multiple occurrence)"""
-    logger.info("Pre processing tau-split-join transitions...")
+    logger.debug("Pre processing tau-split-join transitions...")
     transitions = get_transitions(pnet)
     i = 0
     j = 0
     for transition in transitions:
         if get_transition_name(transition) == 'tau split':
-            logger.info("Pre processing, updating tau-split transition: {0}".format(get_transition_name(transition)))
+            logger.debug("Pre processing, updating tau-split transition: {0}".format(get_transition_name(transition)))
             set_transition_name(transition, 'tau split'+str(i))
             i = i+1
         if get_transition_name(transition) == 'tau join':
-            logger.info("Pre processing, updating tau-join transition: {0}".format(get_transition_name(transition)))
+            logger.debug("Pre processing, updating tau-join transition: {0}".format(get_transition_name(transition)))
             set_transition_name(transition, 'tau join'+str(j))
             j = j+1
 
@@ -131,7 +131,7 @@ def tau_post_processing(hg):
             #create new h_edge
             head = []
             head.append(node)
-            hg.add_hyperedge(tails, head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+            hg.add_hyperedge(tails, head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
         node_name = hg.get_node_attribute(node, 'name')
         if node_name[:9] == 'tau split':
             #get forward star
@@ -143,7 +143,7 @@ def tau_post_processing(hg):
             #create new h_edge
             tail = []
             tail.append(node)
-            hg.add_hyperedge(tail, heads, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+            hg.add_hyperedge(tail, heads, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
     return hg
 
 def tau_reduction(hg):
@@ -153,7 +153,7 @@ def tau_reduction(hg):
         node_name = hg.get_node_attribute(node, 'name')
         """ Reduce tau splits """
         if node_name[:9] == 'tau split' or node_name[:8] == 'tau join':
-            logger.info("Found new tau transition to reduce: {0}".format(node_name))
+            logger.debug("Found new tau transition to reduce: {0}".format(node_name))
             #get forward star and build head for new hyperedge
             f_star = hg.get_forward_star(node)
             new_head = []
@@ -168,7 +168,7 @@ def tau_reduction(hg):
                 new_tail = list(set(new_tail).union(hg.get_hyperedge_tail(edge)))
             hg.remove_hyperedge(edge)
             #create new hyperedge
-            hg.add_hyperedge(new_tail, new_head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+            hg.add_hyperedge(new_tail, new_head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
     return hg
 
 def convert_pnet_to_hypergraph(pnet):
@@ -191,7 +191,7 @@ def convert_pnet_to_hypergraph(pnet):
             #check if join is end event (sink)
             if (len(out_arcs) == 0):
                 isSink = True
-            logger.info("STEP 1 - Creating xor-join node -- {0}".format(node_id))
+            logger.debug("STEP 1 - Creating xor-join node -- {0}".format(node_id))
             hg.add_node(node_id, source = isSource, sink = isSink, type = 'xor-join', name = " ")
             head = []
             head.append(node_id)
@@ -201,13 +201,13 @@ def convert_pnet_to_hypergraph(pnet):
             for arc in inc_arcs:
                 node_id2 = get_id(get_element(get_arc_source(arc), pnet))
                 node_name = get_transition_name(get_element(get_arc_source(arc), pnet))
-                logger.info("STEP 1 - Creating transition node -- {0} -- {1}".format(node_id, node_name))
+                logger.debug("STEP 1 - Creating transition node -- {0} -- {1}".format(node_id, node_name))
                 hg.add_node(node_name, source = isSource, sink = isSink, type = 'transition', name = node_name)
                 tail = []
                 tail.append(node_name)
                 #create hyperedge
-                logger.info("STEP 1 - Creating hyperedge from {0} to {1}".format(str(tail), str(head)))
-                hg.add_hyperedge(tail, head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+                logger.debug("STEP 1 - Creating hyperedge from {0} to {1}".format(str(tail), str(head)))
+                hg.add_hyperedge(tail, head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
         if len(out_arcs) > 1:
             node_id = get_id(place)
             #create node for place in hypergraph (if it does not exist already)
@@ -217,7 +217,7 @@ def convert_pnet_to_hypergraph(pnet):
                 #check if source (start event)
                 if (len(inc_arcs) == 0):
                     isSource = True
-                logger.info("STEP 1 - Creating xor-split node -- {0}".format(node_id))
+                logger.debug("STEP 1 - Creating xor-split node -- {0}".format(node_id))
                 hg.add_node(node_id, source = isSource, sink = isSink, type = 'xor-split', name = " ")
                 #create node for all targets of outgoing arcs
                 isSink = False
@@ -226,16 +226,16 @@ def convert_pnet_to_hypergraph(pnet):
                     node_id2 = get_id(get_element(get_arc_target(arc), pnet))
                     node_name = get_transition_name(get_element(get_arc_target(arc),pnet))
                     if(not hg.has_node(node_id2)):
-                        logger.info("STEP 1 - Creating transition node -- {0} -- {1}".format(node_id, node_name))
+                        logger.debug("STEP 1 - Creating transition node -- {0} -- {1}".format(node_id, node_name))
                         hg.add_node(node_name, source = isSource, sink = isSink, type = 'transition', name = node_name)
                     head = []
                     head.append(node_name)
                     #create hyperedge
-                    logger.info("STEP 1 - Creating hyperedge from {0} to {1}".format(str(tail), str(head)))
-                    hg.add_hyperedge(tail, head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+                    logger.debug("STEP 1 - Creating hyperedge from {0} to {1}".format(str(tail), str(head)))
+                    hg.add_hyperedge(tail, head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
     """ STEP2 : Process each transition """
     for transition in transitions:
-        logger.info("######## Processing transition {0}".format(get_transition_name(transition)))
+        logger.debug("######## Processing transition {0}".format(get_transition_name(transition)))
         isSink = False
         isSource = False
         #check if transition is not a node in hg and add if needed
@@ -247,7 +247,7 @@ def convert_pnet_to_hypergraph(pnet):
             place_inc = get_incoming_arcs(source_place,pnet)
             if not place_inc:
                 isSource = True
-                logger.info("Transition is START: {0}".format(get_transition_name(transition)))
+                logger.debug("Transition is START: {0}".format(get_transition_name(transition)))
         #check if trsnasition is end event
         out_arcs = get_outgoing_arcs(transition,pnet)
         for out_arc in out_arcs:
@@ -255,9 +255,9 @@ def convert_pnet_to_hypergraph(pnet):
             place_out = get_outgoing_arcs(sink_place,pnet)
             if not place_out:
                 isSink = True
-                logger.info("Transition is END: {0}".format(get_transition_name(transition)))
+                logger.debug("Transition is END: {0}".format(get_transition_name(transition)))
         #create node in hypergraph
-        logger.info("STEP 2 - Creating transition node")
+        logger.debug("STEP 2 - Creating transition node")
         hg.add_node(get_transition_name(transition), source = isSource, sink = isSink, type = 'transition', name = get_transition_name(transition))
         #look BACKWARD 
         if not isSource:
@@ -283,8 +283,8 @@ def convert_pnet_to_hypergraph(pnet):
                 if(not hg.has_hyperedge(temp_tail,x_head)):
                     he_from_xors_needed = True
             if(he_from_xors_needed):    
-                logger.info("STEP 2 - Creating backward hyperedge to (multiple) xor - TAIL {0} -- HEAD {1} ".format(str(xplace_tail),str(x_head)))
-                hg.add_hyperedge(xplace_tail, x_head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+                logger.debug("STEP 2 - Creating backward hyperedge to (multiple) xor - TAIL {0} -- HEAD {1} ".format(str(xplace_tail),str(x_head)))
+                hg.add_hyperedge(xplace_tail, x_head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
                 #create forward normal hyperdge
             tail = []
 #             for place in otherp_list:
@@ -319,8 +319,8 @@ def convert_pnet_to_hypergraph(pnet):
                 if(not hg.has_hyperedge(x_tail,temp_head)):
                     he_to_xors_needed = True
             if(he_to_xors_needed):
-                logger.info("STEP 2 - Creating forward hyperedge to (multiple) xor - TAIL {0} -- HEAD {1} ".format(str(x_tail),str(xplace_head)))
-                hg.add_hyperedge(x_tail, xplace_head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+                logger.debug("STEP 2 - Creating forward hyperedge to (multiple) xor - TAIL {0} -- HEAD {1} ".format(str(x_tail),str(xplace_head)))
+                hg.add_hyperedge(x_tail, xplace_head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
                 #create forward normal hyperdge
             head = []
             for place in otherp_list:
@@ -329,8 +329,8 @@ def convert_pnet_to_hypergraph(pnet):
                     trans2 = get_element(get_arc_target(out_arc_l2),pnet)
                     head.append(get_transition_name(trans2))
             if(head):
-                logger.info("STEP 2 - Creating real forward  hyperedge - TAIL {0} -- HEAD {1} ".format(str(x_tail),str(head)))
-                hg.add_hyperedge(x_tail, head, name = " ", phero = 0.0, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
+                logger.debug("STEP 2 - Creating real forward  hyperedge - TAIL {0} -- HEAD {1} ".format(str(x_tail),str(head)))
+                hg.add_hyperedge(x_tail, head, name = " ", phero = 0.5, cost = 0.4, avail = 0.6, qual = 0.2, time = 0.99)
     ## POST PROCESSING of tau-split/join generated by inductive miner
     hg = tau_post_processing(hg)
     #reduction of tau splits and joins
@@ -420,7 +420,7 @@ def main():
     # 
     for transition in transitions:
         name = transition.find("./name/text").text
-        logger.info("Found new Transition: "+str(transition.attrib['id'])+" NAME: "+name)
+        logger.debug("Found new Transition: "+str(transition.attrib['id'])+" NAME: "+name)
          
     # arcs = pnet.findall("./net/page/arc")
     # 
@@ -432,8 +432,8 @@ def main():
     
     hg = convert_pnet_to_hypergraph(pnet)
     print_hg(hg, "hyp_file.txt")
-    logger.info("Number of start events: {0}".format(number_of_start_events(hg)))
-    logger.info("Number of end events: {0}".format(number_of_end_events(hg)))
+    logger.debug("Number of start events: {0}".format(number_of_start_events(hg)))
+    logger.debug("Number of end events: {0}".format(number_of_end_events(hg)))
     print_statistics(hg)
 
 #hg = random_init_attributes(hg)
