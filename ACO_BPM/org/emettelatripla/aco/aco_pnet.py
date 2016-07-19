@@ -21,8 +21,8 @@ def main():
     #file_name = "C://BPMNexamples/inductive/ex1_inductive.pnml"
     #file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
     #file_name = "C://BPMNexamples/real_logs/hospital_inductive.pnml"
-    file_name = "C://BPMNexamples/inductive/repair_start_end_inductive.pnml"
-    #file_name = "C://BPMNexamples/inductive/ex6_claim_inductive.pnml"
+    #file_name = "C://BPMNexamples/inductive/repair_start_end_inductive.pnml"
+    file_name = "C://BPMNexamples/inductive/ex6_claim_inductive.pnml"
     #The following has loop:
     #file_name = "C://BPMNexamples/inductive/ex5_review_inductive.pnml"
     #file_name = "C://BPMNexamples/alpha/ex1_alpha.pnml"

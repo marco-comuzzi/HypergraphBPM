@@ -1,7 +1,7 @@
 tail	head	weight
-n5	b,c	1
-e	n6	1
-a	d,n5	1
-b,c	n6	1
+n5	c,b	1
 n6,d	f	1
 n5	e	1
+e	n6	1
+a	d,n5	1
+c,b	n6	1

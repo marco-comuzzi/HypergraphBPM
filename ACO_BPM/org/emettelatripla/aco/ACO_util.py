@@ -197,7 +197,8 @@ def show_opt_path_pnet(hg_opt, tree):
     logger = logging.getLogger(__name__)
     #get the list of transitions
     pnet = tree.getroot()
-    transitions = get_transitions_from_opt_path(hg_opt)
+    #transitions = get_transitions_from_opt_path(hg_opt)
+    transitions = hg_opt.get_node_set()
     #color
     red_color = ET.Element('fill', color = '#c30e2d')
     #for each transition, add fill color in pnet
@@ -207,10 +208,17 @@ def show_opt_path_pnet(hg_opt, tree):
         for t_pnet in trans_pnet:
             if t_pnet.find("./name/text").text == transition:
                 #transition found, add red_color as element
-                logger.debug("Transition found: {0}".format(transition))
+                logger.debug("Proper Transition found: {0}".format(transition))
                 graphics = t_pnet.find('graphics')
                 #graphics = t_children.Element('graphics')
                 graphics.append(red_color)
+            #adjust tau split and tau join
+            if transition[:8] == 'tau join':
+                logger.debug("Coloring tau join....")
+                t_pnet.find('./toolspecific').attrib['activity'] = transition
+            if transition[:9] == 'tau split':
+                logger.debug("Coloring tau split....")
+                t_pnet.find('./toolspecific').attrib['activity'] = transition
     tree.write("C://BPMNexamples/highlight.pnml", encoding='utf-8')
     
 def reduce_opt_path_pnet(tree):

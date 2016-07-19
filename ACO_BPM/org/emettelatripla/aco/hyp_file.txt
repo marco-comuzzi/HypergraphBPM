@@ -1,11 +1,11 @@
 tail	head	weight
-Test Repair	n8	1
-tau from tree,Inform User	Archive Repair	1
-n6	Repair (Simple)	1
-n9	Test Repair	1
-Restart Repair	n6	1
-Analyze Defect	Inform User,n6	1
-Repair (Simple)	n9	1
-n8	Restart Repair	1
-Register	Analyze Defect	1
-n8	tau from tree	1
+tau split0	advise claimant on reimbursement,initiate payment	1
+initiate payment	close claim	1
+close claim,advise claimant on reimbursement	tau join0	1
+tau join0	n7	1
+n6	tau split0	1
+n7	end	1
+register claim	determine likelihood of claim	1
+assess claim	n6	1
+check if sufficient information is available	register claim	1
+determine likelihood of claim	assess claim	1
