@@ -191,7 +191,7 @@ def get_transitions_from_opt_path(hg_opt):
             transitions.append(hg_opt.get_node_attribute(node, 'name'))
     return transitions
 
-def show_opt_path_pnet(hg_opt, tree):
+def show_opt_path_pnet(hg_opt, tree, file_root):
     """ given optimal path (hypergraph) and a Petri net, it highlights the optimal path in the Petri net
     (highlihgting the non xor/tau transitions in the Petri net """
     logger = logging.getLogger(__name__)
@@ -219,9 +219,9 @@ def show_opt_path_pnet(hg_opt, tree):
             if transition[:9] == 'tau split':
                 logger.debug("Coloring tau split....")
                 t_pnet.find('./toolspecific').attrib['activity'] = transition
-    tree.write("C://BPMNexamples/highlight.pnml", encoding='utf-8')
+    tree.write("C://BPMNexamples/output/"+file_root+"_highlight.pnml", encoding='utf-8')
     
-def reduce_opt_path_pnet(tree):
+def reduce_opt_path_pnet(tree, file_root):
     """ given a pnet with highlighted optimal path, it deletes all the non relevant detail from the pnet"""
     logger = logging.getLogger(__name__)
     logger.debug("Reducing pnet...")
@@ -254,7 +254,7 @@ def reduce_opt_path_pnet(tree):
     #STEP 2: delete arcs sourcing from or targeting non highlighted transitions and places
     # TO BE COMPLETED
     #write the output
-    tree.write("C://BPMNexamples/reduced.pnml", encoding='utf-8')
+    tree.write("C://BPMNexamples/output/"+file_root+"_reduced.pnml", encoding='utf-8')
         
         
         

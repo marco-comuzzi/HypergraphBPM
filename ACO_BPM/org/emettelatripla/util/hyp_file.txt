@@ -1,7 +1,11 @@
 tail	head	weight
-n5	c,b	1
-n6,d	f	1
+b,c	tau join1	1
 n5	e	1
+d,n6	tau join0	1
+tau split0	d,n5	1
 e	n6	1
-a	d,n5	1
-c,b	n6	1
+tau split1	b,c	1
+n5	tau split1	1
+tau join1	n6	1
+tau join0	f	1
+a	tau split0	1

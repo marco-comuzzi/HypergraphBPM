@@ -12,6 +12,7 @@ from org.emettelatripla.aco.ACO_util import random_init_attributes,\
 from org.emettelatripla.aco.ACO_util import show_opt_path_pnet
 from org.emettelatripla.aco.ACO_directed_hypergraph import aco_algorithm
 from org.emettelatripla.util.util import print_node, print_hg
+#from org.emettelatripla.util.bpmn_to_hypergraph import file_name
 
 def main():
     #setup the logger
@@ -22,11 +23,22 @@ def main():
     #file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
     #file_name = "C://BPMNexamples/real_logs/hospital_inductive.pnml"
     #file_name = "C://BPMNexamples/inductive/repair_start_end_inductive.pnml"
-    file_name = "C://BPMNexamples/inductive/ex6_claim_inductive.pnml"
+    #file_name = "C://BPMNexamples/inductive/ex6_claim_inductive.pnml"
     #The following has loop:
     #file_name = "C://BPMNexamples/inductive/ex5_review_inductive.pnml"
     #file_name = "C://BPMNexamples/alpha/ex1_alpha.pnml"
     
+    #MINED WITH INDUCTIVE MINER
+    #file_root = "ex1_inductive"
+    #file_root = "bpi_challenge2012"
+    file_root = "road_fine_process"
+    file_type = "inductive"
+    
+    #MINED WITH ALPHA MINER
+    #file_root = "ex1_alpha"
+    #file_type = "alpha"
+    
+    file_name = "C://BPMNexamples/"+file_type+"/"+file_root+".pnml"
     
     tree = ET.parse(file_name)
     pnet = tree.getroot()
@@ -62,10 +74,10 @@ def main():
     p_opt = aco_algorithm(start_nodes, hg, ANT_NUM, COL_NUM, tau, W_UTILITY)
     
     #highlight on pnet
-    show_opt_path_pnet(p_opt, tree)
+    show_opt_path_pnet(p_opt, tree, file_root)
     
     #reduce
-    reduce_opt_path_pnet(tree)
+    reduce_opt_path_pnet(tree, file_root)
     
     
 

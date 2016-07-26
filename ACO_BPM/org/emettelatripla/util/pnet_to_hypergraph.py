@@ -398,11 +398,15 @@ def get_statistics(hg):
 
 def print_statistics(hg):
     print(str(get_statistics(hg)))
-    
-    
+
+
+
+""" ========================================================================"""
+""" ========================================================================"""    
+""" ========================================================================"""    
+""" ================== main() ================================================="""  
+      
 def main():
-    
-    
     file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
     #file_name = "C://BPMNexamples/real_logs/hospital_inductive.pnml"
     
