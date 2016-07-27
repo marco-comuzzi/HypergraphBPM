@@ -13,11 +13,17 @@ from org.emettelatripla.aco.ACO_util import show_opt_path_pnet
 from org.emettelatripla.aco.ACO_directed_hypergraph import aco_algorithm
 from org.emettelatripla.util.util import print_node, print_hg
 #from org.emettelatripla.util.bpmn_to_hypergraph import file_name
+import sys
 
 def main():
     #setup the logger
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename='C://BPMNexamples/aco.log',level=logging.DEBUG)
     logger = logging.getLogger(__name__)
+    
+    print(str(sys.getrecursionlimit()))
+    sys.setrecursionlimit(100000000)
+    print(str(sys.getrecursionlimit()))
+    
     
     #file_name = "C://BPMNexamples/inductive/ex1_inductive.pnml"
     #file_name = "C://BPMNexamples/inductive/ex4_inductive.pnml"
@@ -30,12 +36,12 @@ def main():
     
     #MINED WITH INDUCTIVE MINER
     #file_root = "ex1_inductive"
-    #file_root = "bpi_challenge2012"
-    file_root = "road_fine_process"
+    file_root = "bpi_challenge2012"
+    #file_root = "road_fine_process"
     file_type = "inductive"
     
     #MINED WITH ALPHA MINER
-    #file_root = "ex1_alpha"
+    #file_root = "ex6_claim_alpha"
     #file_type = "alpha"
     
     file_name = "C://BPMNexamples/"+file_type+"/"+file_root+".pnml"
@@ -67,7 +73,7 @@ def main():
     #run ACO optimisation
     tau = 0.6
     ANT_NUM = 10
-    COL_NUM = 4
+    COL_NUM = 3
     W_UTILITY = {'cost' : 1.0, 'avail' : 0.0, 'qual' : 0.0, 'time' : 0.0}
     
     #call ACO algorithm

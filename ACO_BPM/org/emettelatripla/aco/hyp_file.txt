@@ -1,14 +1,23 @@
 tail	head	weight
-tau join1	n7	1
-n20	Payment	1
-Create Fine	n3	1
-tau split0	n22,tau split1	1
-n6,n23	tau join0	1
-n3	Send Fine	1
-tau split1	n20,n8	1
-n7	Send for Credit Collection	1
-n4	tau split0	1
-Send for Credit Collection	n6	1
-Payment	n21	1
-Send Fine	n4	1
-n21,n9	tau join1	1
+A_SUBMITTED	A_PARTLYSUBMITTED	1
+W_Completeren aanvraag	n9	1
+A_CANCELLED	n8	1
+n5	tau from tree15	1
+tau from tree4	n12	1
+n10	tau from tree4	1
+tau from tree14	n5	1
+O_SENT_BACK	n10	1
+n23	W_Wijzigen contractgegevens	1
+n7	tau from tree14	1
+A_PARTLYSUBMITTED	n4	1
+W_Nabellen incomplete dossiers	n11	1
+n8	W_Completeren aanvraag	1
+n6	A_CANCELLED	1
+W_Wijzigen contractgegevens	n7	1
+n11	O_SENT_BACK	1
+n12	tau from tree9	1
+n9	W_Nabellen incomplete dossiers	1
+tau from tree9	n23	1
+n4	W_Beoordelen fraude	1
+tau from tree15	n4	1
+W_Beoordelen fraude	n6	1

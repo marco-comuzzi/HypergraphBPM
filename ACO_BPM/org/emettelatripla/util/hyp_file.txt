@@ -1,11 +1,47 @@
 tail	head	weight
-b,c	tau join1	1
-n5	e	1
-d,n6	tau join0	1
-tau split0	d,n5	1
-e	n6	1
-tau split1	b,c	1
-n5	tau split1	1
-tau join1	n6	1
-tau join0	f	1
-a	tau split0	1
+n18	tau from tree5	1
+tau from tree0	n4	1
+tau split0	n22,tau split1	1
+tau from tree2	n14	1
+tau from tree4	n17	1
+n7	Send for Credit Collection	1
+n8	tau from tree1	1
+n20	Payment	1
+Receive Result Appeal from Prefecture	n17	1
+tau join2	n9	1
+n13	tau from tree2	1
+Payment	n21	1
+tau from tree1	n9	1
+n17,n14,Add penalty,n19	tau join2	1
+tau from tree5	n19	1
+Appeal to Judge	n19	1
+n22	Send Appeal to Prefecture	1
+Insert Fine Notification	tau split2	1
+Send Appeal to Prefecture	n23	1
+Insert Date Appeal to Prefecture	n15	1
+tau from tree8	n23	1
+n21,n9	tau join1	1
+tau join1	n7	1
+n13	Insert Date Appeal to Prefecture	1
+n18	Appeal to Judge	1
+n22	tau from tree8	1
+Create Fine	n3	1
+n7	tau from tree7	1
+n16	Receive Result Appeal from Prefecture	1
+tau from tree3	n14	1
+Notify Result Appeal to Offender	n14	1
+n6,n23	tau join0	1
+tau split2	n13,n18,Add penalty,n16	1
+n15	Notify Result Appeal to Offender	1
+Send Fine	n4	1
+n15	tau from tree3	1
+tau split1	n20,n8	1
+n3	tau from tree0	1
+n4	tau split0	1
+tau from tree6	n21	1
+Send for Credit Collection	n6	1
+tau from tree7	n6	1
+n20	tau from tree6	1
+n3	Send Fine	1
+n16	tau from tree4	1
+n8	Insert Fine Notification	1

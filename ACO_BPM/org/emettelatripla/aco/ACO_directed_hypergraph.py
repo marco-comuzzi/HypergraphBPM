@@ -50,8 +50,12 @@ def aco_algorithm(start_node_set, hg, ANT_NUM, COL_NUM, tau, W_UTILITY):
             #add source node to optimal path (and its attributes)
             for node in start_node_set:
                 p.add_node(node, hg.get_node_attributes(node))
-            #call aco_search on p
-            p = aco_search(p, hg, start_node_set)
+            """ call aco_search on p"""
+            # recursive
+            visited = []
+            p = aco_search(p, hg, start_node_set, 0, visited)
+            # non recursive
+            #p = aco_search_norec(p, hg, start_node_set)
             #PRINT CURRENT OPTIMAL PATH
             print_hg(p,'hyp_file.txt')
             #calculate utility of p
@@ -82,7 +86,10 @@ def aco_algorithm(start_node_set, hg, ANT_NUM, COL_NUM, tau, W_UTILITY):
 #start_node_set: current position (can be a set of nodes) in the search
 #p: current path
 #hg: process model
-def aco_search(p, hg, node_set):
+# depth : just to pretty print with indentation
+# list of nodes visited so far
+def aco_search(p, hg, node_set, depth, visited):
+    visited.append(node_set)
     #select next hyperedge from node according to pheromone distribution
     edge_set = set()
     for node in node_set:
@@ -92,13 +99,11 @@ def aco_search(p, hg, node_set):
     tail = hg.get_hyperedge_tail(next_edge)
     head = hg.get_hyperedge_head(next_edge)
     attrs = hg.get_hyperedge_attributes(next_edge)
-    print_hyperedge(next_edge, hg)
+    #print_hyperedge(next_edge, hg)
     #get the id of the next_edge and use it as id of new edge in p
-    id = next_edge
-    attrs.update({'id' : id})
+    edge_id = next_edge
+    attrs.update({'id' : edge_id})
     #add selected hyperedge/node to p
-    if p.has_hyperedge(tail, head):
-        i=0
     p.add_hyperedge(tail, head, attrs)
     next_head = hg.get_hyperedge_head(next_edge)
     for node in next_head:
@@ -109,10 +114,22 @@ def aco_search(p, hg, node_set):
         p.add_node(node, hg.get_node_attributes(node))
     #if new node added is sink, then return p
     isSink = False
+    #print(2*depth*"-"+"+++ nodes to call: {0}".format(next_head))
     for node in next_head:
         if hg.get_node_attribute(node,'sink') == True:
+            #print(2*depth*"-"+"--- STOP ---: {0}".format(str(node)))
             isSink = True
-    if isSink == False:
-        aco_search(p, hg, next_head)
+        if isSink == False:
+        #else:
+            #print(2*depth*"-"+"CALLING ACO SEARCH on: {0}".format(str(node)))
+            #p = aco_search(p, hg, next_head, depth+1)
+            node_s = []
+            node_s.append(node)
+            # store the node as visited
+            print(str(depth+1))
+            # avoid loops by chekcing if node has been visited already
+            if node_s not in visited:
+                p = aco_search(p, hg, node_s, depth+1, visited)
     #else recursive call
     return p
+

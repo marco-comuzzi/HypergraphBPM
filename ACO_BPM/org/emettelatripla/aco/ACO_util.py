@@ -135,10 +135,10 @@ def phero_choice(edge_set, hg):
     low = cumul_hash[0]
     high = cumul_hash[len_ch]
     choice = random.uniform(0, high)
-    logger.debug("Random number to choose next edge: {0} ==== Cumulative choice list: {1}".format(str(choice),str(cumul_hash)))
-    logger.debug("Sorted dict: {0}".format(str(sorted_dict)))
-    logger.debug("Hash pheroval: {0}".format(str(hash_pheroval)))
-    logger.debug("Hash edge_id: {0}".format(str(hash_edgeid)))
+    #logger.debug("Random number to choose next edge: {0} ==== Cumulative choice list: {1}".format(str(choice),str(cumul_hash)))
+    #logger.debug("Sorted dict: {0}".format(str(sorted_dict)))
+    #logger.debug("Hash pheroval: {0}".format(str(hash_pheroval)))
+    #logger.debug("Hash edge_id: {0}".format(str(hash_edgeid)))
     #caculate the edge_id based on the drawn random number
     notFound = True
     i = 0
@@ -160,8 +160,8 @@ def phero_choice(edge_set, hg):
     #print("Chosen edge i: "+str(i))
     chosen_edge = hash_edgeid[edge_in] 
     logger.debug("^^^ Edge selected based on pheromone choice: {0}".format(str(chosen_edge)))
-    print_hyperedge(chosen_edge, hg)
-    logger.debug("^^^ end selected hyperedge print ^^^^")
+    #print_hyperedge(chosen_edge, hg)
+    #logger.debug("^^^ end selected hyperedge print ^^^^")
     return chosen_edge
 
 def random_init_attributes(hg):
@@ -192,34 +192,49 @@ def get_transitions_from_opt_path(hg_opt):
     return transitions
 
 def show_opt_path_pnet(hg_opt, tree, file_root):
-    """ given optimal path (hypergraph) and a Petri net, it highlights the optimal path in the Petri net
-    (highlihgting the non xor/tau transitions in the Petri net """
+    """ given optimal path (hypergraph hg_opt) and a Petri net (tree), it highlights the optimal path in the Petri net
+    (highlihgting the non xor/tau nodes in the Petri net 
+    This functions also "re-colors" the tau-split and joins in the pnet"""
     logger = logging.getLogger(__name__)
-    #get the list of transitions
+    #get the list of nodes
     pnet = tree.getroot()
-    #transitions = get_transitions_from_opt_path(hg_opt)
-    transitions = hg_opt.get_node_set()
+    #nodes = get_transitions_from_opt_path(hg_opt)
+    nodes = hg_opt.get_node_set()
     #color
     red_color = ET.Element('fill', color = '#c30e2d')
-    #for each transition, add fill color in pnet
+    grey_color = ET.Element('fill', color = '#A9A9A9')
+    #for each node, add fill color in pnet
     trans_pnet = get_transitions(pnet)
-    for transition in transitions:
-        #find transition in pnet
-        for t_pnet in trans_pnet:
-            if t_pnet.find("./name/text").text == transition:
-                #transition found, add red_color as element
-                logger.debug("Proper Transition found: {0}".format(transition))
-                graphics = t_pnet.find('graphics')
-                #graphics = t_children.Element('graphics')
-                graphics.append(red_color)
-            #adjust tau split and tau join
-            if transition[:8] == 'tau join':
-                logger.debug("Coloring tau join....")
-                t_pnet.find('./toolspecific').attrib['activity'] = transition
-            if transition[:9] == 'tau split':
-                logger.debug("Coloring tau split....")
-                t_pnet.find('./toolspecific').attrib['activity'] = transition
-    tree.write("C://BPMNexamples/output/"+file_root+"_highlight.pnml", encoding='utf-8')
+    
+        #find node in pnet
+    for t_pnet in trans_pnet:
+        t_name = t_pnet.find("./name/text").text
+        in_opt_path = False
+        for node in nodes:
+            if  t_name == node:
+                in_opt_path = True
+                logger.debug("Transition {0} is in the optimal path - Node: {1}".format(t_name,node))
+        if in_opt_path:
+            if t_name[0:3] == 'tau':
+                logger.debug("Found tau transition on optimal path: making it visible...")
+                t_pnet.find('./toolspecific').attrib['activity'] = t_name
+            #node found, add red_color as element
+            logger.debug("Colouring red - node: {0} ...".format(t_name))
+            graphics = t_pnet.find('graphics')
+            #graphics = t_children.Element('graphics')
+            graphics.append(red_color)
+        #adjust tau split and tau join
+#         else:
+#             if node[:2] == 'tau':
+#                 logger.debug("Found tau transition outside optimal path found: making it visible and grey...")
+#                 # make it visible
+#                 t_pnet.find('./toolspecific').attrib['activity'] = node
+#                 # change colour
+#                 graphics = t_pnet.find('graphics')
+#                 graphics.append(grey_color)
+    output_file = "C://BPMNexamples/output/"+file_root+"_highlight.pnml"
+    logger.debug("writing output on file: {0}".format(output_file))
+    tree.write(output_file, encoding='utf-8')
     
 def reduce_opt_path_pnet(tree, file_root):
     """ given a pnet with highlighted optimal path, it deletes all the non relevant detail from the pnet"""
